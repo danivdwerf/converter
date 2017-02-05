@@ -14,6 +14,7 @@ class CreateGui
 	public:GtkWidget* button;
 	public:GtkWidget* entry;
 	public:GtkWidget* textView;
+	public:GtkWidget* scroll;
 	public:GdkColor colour;
 	
 	public:GtkWidget* createWindow(int width, int height);
@@ -21,6 +22,7 @@ class CreateGui
 	public:GtkWidget* createButton(string label, int x, int y);
 	public:GtkWidget* createEntry();
 	public:GtkWidget* createTextView();
+	public:GtkWidget* createScroller(int width, int height);
 	public:void destroyWidget(GtkWidget* widget); 
 };
 #endif 

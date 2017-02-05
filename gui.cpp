@@ -49,23 +49,35 @@ using namespace std;
 	GtkWidget* CreateGui::createEntry()
 	{
 		entry = gtk_entry_new();
-		gtk_fixed_put(GTK_FIXED(fixed),entry,50,100);
-		gtk_entry_set_width_chars(GTK_ENTRY(entry),10);
+		gtk_fixed_put(GTK_FIXED(fixed),entry,330,0);
+		gtk_entry_set_width_chars(GTK_ENTRY(entry),30);
 		gtk_entry_set_text(GTK_ENTRY(entry),"Fill in the path to your file...");
 		gtk_widget_show(entry);
 		return entry;
 	}
 
 	GtkWidget* CreateGui::createTextView()
+	{		
+		textView = gtk_text_view_new();
+		GtkTextBuffer* buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textView));
+		
+		gtk_text_buffer_set_text(buffer,"Your code will be put here after converting\n\nThis software is part of:\nwww.freetimedev.com",-1);
+		gtk_text_view_set_editable(GTK_TEXT_VIEW(textView),false);
+		gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(textView),false);
+		gtk_widget_show(textView);
+		
+		return textView;
+	}
+	
+	GtkWidget* CreateGui::createScroller(int width, int height)
 	{
-  	textView = gtk_text_view_new();
-  	GtkTextBuffer* buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textView));
-  	gtk_text_buffer_set_text(buffer,"Please fill in the ABSOLUTE url to the file you want to convert.",-1);
-  	gtk_fixed_put (GTK_FIXED (fixed), textView, 0, 0);
-  	gtk_text_view_set_editable(GTK_TEXT_VIEW(textView),false);
-  	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(textView),false);
-  	gtk_widget_show(textView);   
-  	return textView;
+		GtkWidget* scroll = gtk_scrolled_window_new(NULL, NULL);
+		gtk_widget_set_size_request(scroll, width, height);
+		gtk_container_add(GTK_CONTAINER(scroll), textView);
+		gtk_container_add(GTK_CONTAINER(fixed), scroll);
+		gtk_fixed_put (GTK_FIXED (fixed), scroll, 0, 0);	
+		gtk_widget_show(scroll);   
+		return scroll;
 	}
 
 	void CreateGui::destroyWidget(GtkWidget* widget)
