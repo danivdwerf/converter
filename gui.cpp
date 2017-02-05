@@ -13,19 +13,21 @@ using namespace std;
 	GtkWidget* textView;
 	GdkColor colour;
 
-	GtkWidget* CreateGui::createWindow(int width, int height)
+	GtkWidget* CreateGui::createWindow(int width, int height, string title)
 	{   
 		colour.red = 0x3333;
 		colour.green = 0x3333;
  		colour.blue = 0x3333;
  		
  		window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+ 		
  		gtk_widget_set_size_request(window, width,height);
  		gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
- 		//gtk_window_set_default_size(GTK_WINDOW (window), width,height);
- 		gtk_window_set_title (GTK_WINDOW (window), "FreeTimeDev.com");
+ 		
+ 		gtk_window_set_title (GTK_WINDOW (window), title.c_str());
  		gtk_container_set_border_width (GTK_CONTAINER (window), 10);
 		gtk_widget_modify_bg(window,GTK_STATE_NORMAL,&colour);
+		
 		g_signal_connect (window, "destroy",G_CALLBACK (gtk_main_quit), NULL);
 		return window;
 	}
@@ -46,11 +48,11 @@ using namespace std;
 		return button;
 	}
 
-	GtkWidget* CreateGui::createEntry()
+	GtkWidget* CreateGui::createEntry(int x, int y, int width)
 	{
 		entry = gtk_entry_new();
-		gtk_fixed_put(GTK_FIXED(fixed),entry,330,0);
-		gtk_entry_set_width_chars(GTK_ENTRY(entry),30);
+		gtk_fixed_put(GTK_FIXED(fixed),entry,x,y);
+		gtk_entry_set_width_chars(GTK_ENTRY(entry),width);
 		gtk_entry_set_text(GTK_ENTRY(entry),"Fill in the path to your file...");
 		gtk_widget_show(entry);
 		return entry;
@@ -69,11 +71,11 @@ using namespace std;
 		return textView;
 	}
 	
-	GtkWidget* CreateGui::createScroller(int width, int height)
+	GtkWidget* CreateGui::createScroller(int width, int height, GtkWidget* widget)
 	{
 		GtkWidget* scroll = gtk_scrolled_window_new(NULL, NULL);
 		gtk_widget_set_size_request(scroll, width, height);
-		gtk_container_add(GTK_CONTAINER(scroll), textView);
+		gtk_container_add(GTK_CONTAINER(scroll), widget);
 		gtk_container_add(GTK_CONTAINER(fixed), scroll);
 		gtk_fixed_put (GTK_FIXED (fixed), scroll, 0, 0);	
 		gtk_widget_show(scroll);   

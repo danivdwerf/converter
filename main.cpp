@@ -16,7 +16,6 @@ Keywords keywords;
 CreateGui gui;
 
 GtkWidget* guiWindow;
-GtkWidget* guiButton;
 GtkWidget* guiEntry;
 GtkWidget* guiTextView;
 GtkWidget* scroller;
@@ -30,26 +29,31 @@ int main(int argc,char* argv[])
 	gtk_init(&argc,&argv);
 	
 	//Create the window	
-	guiWindow = gui.createWindow(640, 360);
+	guiWindow = gui.createWindow(640, 360, "FTDConverter");
+	
 	//Create the fixed container
 	GtkWidget* guiFixed = gui.createContainer();
-	//Create the submit button
-	guiButton = gui.createButton("UnityC# to ASCII",330, 40);
-	//GtkWidget* buttonTwo = gui.createButton("HTML to ASCII",330, 80);
-	//Add an eventlistener to the button to handle the click
-	g_signal_connect (guiButton,"clicked",G_CALLBACK(openFile),NULL);
-	//Create form entry
-	guiEntry = gui.createEntry();
-	//Create Text view to paste the ascii code
+	
+	//Create the buttons to convert the file
+	GtkWidget* csharpButton = gui.createButton("UnityC# to ASCII",330, 40);
+	GtkWidget* htmlButton = gui.createButton("HTML to ASCII",330, 80);
+	
+	//Add eventlisteners handle button clicks
+	g_signal_connect (csharpButton,"clicked",G_CALLBACK(openFile),NULL);
+	
+	//Create entry for path 
+	guiEntry = gui.createEntry(330,0,30);
+	
+	//Create Text view to store the new code in
 	guiTextView = gui.createTextView();
 	
-	scroller = gui.createScroller(320, 350);
+	//Make textview scrollable, so it won't mess up the window
+	scroller = gui.createScroller(320, 350, guiTextView);
   
 	//show the window  
 	gtk_widget_show_all (guiWindow);
 	gtk_main ();
   
-	//end the main function
 	return 0;
 }
 

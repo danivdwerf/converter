@@ -17,12 +17,12 @@ class CreateGui
 	public:GtkWidget* scroll;
 	public:GdkColor colour;
 	
-	public:GtkWidget* createWindow(int width, int height);
+	public:GtkWidget* createWindow(int width, int height, string title);
 	public:GtkWidget* createContainer();
 	public:GtkWidget* createButton(string label, int x, int y);
-	public:GtkWidget* createEntry();
+	public:GtkWidget* createEntry(int x, int y, int width);
 	public:GtkWidget* createTextView();
-	public:GtkWidget* createScroller(int width, int height);
+	public:GtkWidget* createScroller(int width, int height, GtkWidget* widget);
 	public:void destroyWidget(GtkWidget* widget); 
 };
 #endif 
