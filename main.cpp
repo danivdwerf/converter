@@ -13,6 +13,7 @@ string lines,word,path;
 ifstream myFile;
 
 Keywords keywords;
+CreateGui gui;
 
 GtkWidget* guiWindow;
 GtkWidget* guiButton;
@@ -24,22 +25,21 @@ string replaceCode(string &original);
 
 int main(int argc,char* argv[])
 {
-	CreateGui creater;
 	//initalize gtk
 	gtk_init(&argc,&argv);
 	
 	//Create the window	
-	guiWindow = creater.createWindow();
+	guiWindow = gui.createWindow(640, 360);
 	//Create the fixed container
-	GtkWidget* guiFixed = creater.createContainer();
+	GtkWidget* guiFixed = gui.createContainer();
 	//Create the submit button
-	guiButton = creater.createButton();
+	guiButton = gui.createButton("UnityC# to ASCII",230,130);
 	//Add an eventlistener to the button to handle the click
 	g_signal_connect (guiButton,"clicked",G_CALLBACK(openFile),NULL);
 	//Create form entry
-	guiEntry = creater.createEntry();
+	guiEntry = gui.createEntry();
 	//Create Text view to paste the ascii code
-	guiTextView = creater.createTextView();
+	guiTextView = gui.createTextView();
   
 	//show the window  
 	gtk_widget_show (guiWindow);

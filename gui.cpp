@@ -2,8 +2,9 @@
 #include <gtkmm.h>
 #include <iostream>
 #include <gtk/gtk.h>
-
+#include <string>
 using namespace Gtk;
+using namespace std;
 
 	GtkWidget* window;
 	GtkWidget* fixed;
@@ -12,18 +13,21 @@ using namespace Gtk;
 	GtkWidget* textView;
 	GdkColor colour;
 
-	GtkWidget* CreateGui::createWindow()
+	GtkWidget* CreateGui::createWindow(int width, int height)
 	{   
-		window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  	colour.red = 0x3333;
-  	colour.green = 0x3333;
+		colour.red = 0x3333;
+		colour.green = 0x3333;
  		colour.blue = 0x3333;
+ 		
+ 		window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+ 		gtk_widget_set_size_request(window, width,height);
+ 		gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
+ 		//gtk_window_set_default_size(GTK_WINDOW (window), width,height);
+ 		gtk_window_set_title (GTK_WINDOW (window), "FreeTimeDev.com");
+ 		gtk_container_set_border_width (GTK_CONTAINER (window), 10);
 		gtk_widget_modify_bg(window,GTK_STATE_NORMAL,&colour);
-  	gtk_window_set_title (GTK_WINDOW (window), "FreeTimeDev.com");
-  	gtk_window_resize(GTK_WINDOW(window),640,360);
-	  gtk_container_set_border_width (GTK_CONTAINER (window), 10);
-	  g_signal_connect (window, "destroy",G_CALLBACK (gtk_main_quit), NULL);
-	  return window;
+		g_signal_connect (window, "destroy",G_CALLBACK (gtk_main_quit), NULL);
+		return window;
 	}
 	
 	GtkWidget* CreateGui::createContainer()
@@ -34,22 +38,22 @@ using namespace Gtk;
 	  return fixed;
 	}
 
-	GtkWidget* CreateGui::createButton()
+	GtkWidget* CreateGui::createButton(string label, int x, int y)
 	{
- 		button = gtk_button_new_with_label ("Convert HTML to ASCII");
-  	gtk_fixed_put (GTK_FIXED (fixed), button, 230, 130);
-  	gtk_widget_show (button);
-  	return button;
+ 		button = gtk_button_new_with_label (label.c_str());
+		gtk_fixed_put (GTK_FIXED (fixed), button, x, y);
+		gtk_widget_show (button);
+		return button;
 	}
 
 	GtkWidget* CreateGui::createEntry()
 	{
-  	entry = gtk_entry_new();
-  	gtk_fixed_put(GTK_FIXED(fixed),entry,50,100);
-  	gtk_entry_set_width_chars(GTK_ENTRY(entry),70);
-  	gtk_entry_set_text(GTK_ENTRY(entry),"Fill in the path to your file...");
-	  gtk_widget_show(entry);
-	  return entry;
+		entry = gtk_entry_new();
+		gtk_fixed_put(GTK_FIXED(fixed),entry,50,100);
+		gtk_entry_set_width_chars(GTK_ENTRY(entry),10);
+		gtk_entry_set_text(GTK_ENTRY(entry),"Fill in the path to your file...");
+		gtk_widget_show(entry);
+		return entry;
 	}
 
 	GtkWidget* CreateGui::createTextView()
