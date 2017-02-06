@@ -48,24 +48,25 @@ using namespace std;
 		return button;
 	}
 
-	GtkWidget* CreateGui::createEntry(int x, int y, int width)
+	GtkWidget* CreateGui::createEntry(int x, int y, int width, string placeholder)
 	{
 		entry = gtk_entry_new();
 		gtk_fixed_put(GTK_FIXED(fixed),entry,x,y);
 		gtk_entry_set_width_chars(GTK_ENTRY(entry),width);
-		gtk_entry_set_text(GTK_ENTRY(entry),"Fill in the path to your file...");
+		gtk_entry_set_text(GTK_ENTRY(entry),placeholder.c_str());
 		gtk_widget_show(entry);
 		return entry;
 	}
 
-	GtkWidget* CreateGui::createTextView()
+	GtkWidget* CreateGui::createTextView(string text)
 	{		
 		textView = gtk_text_view_new();
 		GtkTextBuffer* buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textView));
 		
-		gtk_text_buffer_set_text(buffer,"Your code will be put here after converting\n\nThis software is part of:\nwww.freetimedev.com",-1);
+		gtk_text_buffer_set_text(buffer,text.c_str(),-1);
 		gtk_text_view_set_editable(GTK_TEXT_VIEW(textView),false);
 		gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(textView),false);
+		gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(textView),GTK_WRAP_WORD);
 		gtk_widget_show(textView);
 		
 		return textView;

@@ -9,19 +9,19 @@ using namespace Gtk;
 using namespace std;
 class CreateGui
 {
-	public:GtkWidget* window;
-	public:GtkWidget* fixed;
-	public:GtkWidget* button;
-	public:GtkWidget* entry;
-	public:GtkWidget* textView;
-	public:GtkWidget* scroll;
-	public:GdkColor colour;
+	private:GtkWidget* window;
+	private:GtkWidget* fixed;
+	private:GtkWidget* button;
+	private:GtkWidget* entry;
+	private:GtkWidget* textView;
+	private:GtkWidget* scroll;
+	private:GdkColor colour;
 	
 	public:GtkWidget* createWindow(int width, int height, string title);
 	public:GtkWidget* createContainer();
 	public:GtkWidget* createButton(string label, int x, int y);
-	public:GtkWidget* createEntry(int x, int y, int width);
-	public:GtkWidget* createTextView();
+	public:GtkWidget* createEntry(int x, int y, int width, string placeholder);
+	public:GtkWidget* createTextView(string text);
 	public:GtkWidget* createScroller(int width, int height, GtkWidget* widget);
 	public:void destroyWidget(GtkWidget* widget); 
 };

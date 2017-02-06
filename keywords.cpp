@@ -147,7 +147,6 @@ void Keywords::highlightCSharp(string &original)
 {
 	const vector<string> keywords = getCSharpkeywords();
 	const vector<string> highlightedKeywords = getCSharpHighlighted();
-	cout<<keywords.size();
 	for(int i=0;i<keywords.size();i++)
     {
         size_t start_pos=0;
