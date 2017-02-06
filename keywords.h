@@ -9,7 +9,15 @@ class Keywords
 {
 	private: const vector<string> getCSharpkeywords();
 	private: const vector<string> getCSharpHighlighted();
-	public: void highlightCSharp(string &original);
+	private: void highlightCSharp(string &original);
+	
+	/*
+	private: const vector<string> getHTMLkeywords();
+	private: const vector<string> getHTMLhighlighted();
+	private: const vector<>string highlightHTML(string &original);
+	*/
+	
+	public: void highlight(string& extension, string& code);
 };
 
 #endif

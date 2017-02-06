@@ -158,4 +158,18 @@ void Keywords::highlightCSharp(string &original)
     }
 }
 
+void Keywords::highlight(string& extension, string& code)
+{
+	if(extension=="")
+	{
+		return;
+	}
+	
+	if(extension == "cs")
+	{
+		highlightCSharp(code);
+		return;
+	}
+}
+
 

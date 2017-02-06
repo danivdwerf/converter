@@ -23,6 +23,7 @@ GtkWidget* scroller;
 void openFile();
 void openError(string message);
 string replaceCode(string &original);
+string getExtension(const string& path);
 
 int main(int argc,char* argv[])
 {
@@ -46,7 +47,7 @@ int main(int argc,char* argv[])
 	guiEntry = gui.createEntry(330,0,30,"Fill in the path to your file...");
 	
 	//Create Text view to store the new code in
-	guiTextView = gui.createTextView("Your converted code will be show here after converting.\n\nClick within the window and press ctrl+c to copy the text to your clipboard.\n\nThis software is part of:\nwww.freetimedev.com");
+	guiTextView = gui.createTextView("Your converted code will be show here after converting.\n\nClick within the window and press ctrl+c to copy the text to your clipboard.\n\nAvailable languages are:\nUnityC#\n\nThis software is part of:\nwww.freetimedev.com");
 	
 	//Make textview scrollable, so it won't mess up the window
 	scroller = gui.createScroller(320, 350, guiTextView);
@@ -74,7 +75,8 @@ void openFile()
 		if(myFile.is_open())
 		{ 
 			string textFile ((istreambuf_iterator<char>(myFile)),istreambuf_iterator<char>());
-			keywords.highlightCSharp(textFile);
+			string extension = getExtension(path);
+			keywords.highlight(extension, textFile);
 			GtkTextBuffer* buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(guiTextView));
 			gtk_text_buffer_set_text(buffer,textFile.c_str(),-1);
 			myFile.close();
@@ -90,4 +92,16 @@ void openError(string message)
 {
 	GtkTextBuffer* buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(guiTextView));
 	gtk_text_buffer_set_text(buffer, message.c_str(), -1);  
+}
+
+string getExtension(const string& path)
+{
+		if(path.find_last_of(".") != string::npos)
+		{
+			return path.substr(path.find_last_of(".")+1);
+		}
+		else
+		{
+			return 0;
+		}
 }
