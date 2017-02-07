@@ -25,6 +25,23 @@ void openError(string message);
 string replaceCode(string &original);
 string getExtension(const string& path);
 
+static void fileChooser(GtkWidget* button, gpointer window)
+{
+	GtkWidget* dialog = gtk_file_chooser_dialog_new("Open a file",GTK_WINDOW(window),GTK_FILE_CHOOSER_ACTION_OPEN,GTK_STOCK_OK,GTK_RESPONSE_OK,GTK_STOCK_CANCEL,GTK_RESPONSE_CANCEL,NULL);
+	gtk_widget_show_all(dialog);
+	int resp=gtk_dialog_run(GTK_DIALOG(dialog));
+	
+	if(resp==GTK_RESPONSE_OK)
+	{
+		gtk_entry_set_text(GTK_ENTRY(guiEntry),gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)));
+		gtk_widget_destroy(dialog); 
+	}
+	else
+	{
+		gtk_widget_destroy(dialog);
+	}
+}
+
 int main(int argc,char* argv[])
 {
 	//initalize gtk
@@ -37,17 +54,18 @@ int main(int argc,char* argv[])
 	GtkWidget* guiFixed = gui.createContainer();
 	
 	//Create the buttons to convert the file
-	GtkWidget* csharpButton = gui.createButton("UnityC# to ASCII",330, 40);
-	//GtkWidget* htmlButton = gui.createButton("HTML to ASCII",330, 80);
+	GtkWidget* fileButton = gui.createButton("Choose a file", 330, 40);
+	GtkWidget* csharpButton = gui.createButton("Convert your code",330, 80);
 	
 	//Add eventlisteners handle button clicks
-	g_signal_connect (csharpButton,"clicked",G_CALLBACK(openFile),NULL);
+	g_signal_connect (csharpButton,"clicked", G_CALLBACK(openFile),NULL);
+	g_signal_connect (fileButton, "clicked", G_CALLBACK(fileChooser),guiWindow);
 	
 	//Create entry for path 
 	guiEntry = gui.createEntry(330,0,30,"Fill in the path to your file...");
 	
 	//Create Text view to store the new code in
-	guiTextView = gui.createTextView("Your converted code will be show here after converting.\n\nClick within the window and press ctrl+c to copy the text to your clipboard.\n\nAvailable languages are:\nUnityC#\n\nThis software is part of:\nwww.freetimedev.com");
+	guiTextView = gui.createTextView("Fill in the path to your file, or click the choose a file button.\n\nAfter selecting your file, your converted code will be show here after converting.\n\nClick within the window and press ctrl+c to copy the text to your clipboard.\n\nAvailable languages are:\nUnityC#\n\nThis software is part of:\nwww.freetimedev.com");
 	
 	//Make textview scrollable, so it won't mess up the window
 	scroller = gui.createScroller(320, 350, guiTextView);
@@ -60,8 +78,12 @@ int main(int argc,char* argv[])
 }
 
 void openFile()
-{  
-    string path = gtk_entry_get_text(GTK_ENTRY(guiEntry));
+{ 
+	if(path=="")
+	{
+		path = gtk_entry_get_text(GTK_ENTRY(guiEntry));
+	}
+	
     DIR* dir;
     if((dir = opendir(path.c_str())) != NULL)
     {
@@ -86,6 +108,7 @@ void openFile()
 			openError(path + " was not found!\nPlease fill in a valid path");
 		}
 	}
+	path = "";
 }
 
 void openError(string message)
@@ -102,6 +125,6 @@ string getExtension(const string& path)
 		}
 		else
 		{
-			return 0;
+			return "";
 		}
 }

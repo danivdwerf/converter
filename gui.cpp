@@ -11,6 +11,7 @@ using namespace std;
 	GtkWidget* button;
 	GtkWidget* entry;
 	GtkWidget* textView;
+	GtkWidget* dialog;
 	GdkColor colour;
 
 	GtkWidget* CreateGui::createWindow(int width, int height, string title)

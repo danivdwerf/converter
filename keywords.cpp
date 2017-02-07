@@ -158,6 +158,114 @@ void Keywords::highlightCSharp(string &original)
     }
 }
 
+const vector<string> Keywords::getHTMLkeywords()
+{
+	vector<string> temp;
+	
+	temp.push_back("<!DOCTYPE html>");
+	temp.push_back("<html");
+	temp.push_back("</html>");
+	temp.push_back("<head");
+	temp.push_back("</head>");
+	temp.push_back("<body");
+	temp.push_back("</body>");
+	temp.push_back("<a");
+	temp.push_back("</a>");
+	temp.push_back("<table");
+	temp.push_back("</table>");
+	temp.push_back("<form");
+	temp.push_back("</form>");
+	temp.push_back("<tbody");
+	temp.push_back("</tbody>");
+	temp.push_back("<th");
+	temp.push_back("</th>");
+	temp.push_back("<tr");
+	temp.push_back("</tr>");
+	temp.push_back("<h1");
+	temp.push_back("</h1>");
+	temp.push_back("<h2");
+	temp.push_back("</h2>");
+	temp.push_back("<h3");
+	temp.push_back("</h3>");
+	temp.push_back("<h4");
+	temp.push_back("</h4>");
+	temp.push_back("<h5");
+	temp.push_back("</h5>");
+	temp.push_back("<h6");
+	temp.push_back("</h6>");
+	temp.push_back("<p");
+	temp.push_back("</p>");
+	temp.push_back("<meta");
+	temp.push_back("<link");
+	temp.push_back("<main");
+	temp.push_back("</main>");
+	temp.push_back("<");
+	temp.push_back(">");
+	return temp;
+}
+
+const vector<string> Keywords::getHTMLhighlighted()
+{
+	vector<string> temp;
+	
+	temp.push_back("&lt;<span class='green_code'>!DOCTYPE html</span>&gt;");
+	temp.push_back("&lt;<span class='green_code'>html</span>");
+	temp.push_back("&lt;<span class='green_code'>/html</span>&gt;");
+	temp.push_back("&lt;<span class='green_code'>head</span>");
+	temp.push_back("&lt;<span class='green_code'>/head</span>&gt;");
+	temp.push_back("&lt;<span class='green_code'>body</span>");
+	temp.push_back("&lt;<span class='green_code'>/body</span>&gt;");
+	temp.push_back("&lt;<span class='green_code'>a</span>");
+	temp.push_back("&lt;<span class='green_code'>/a</span>&gt;");
+	temp.push_back("&lt;<span class='green_code'>table</span>");
+	temp.push_back("&lt;<span class='green_code'>/table</span>&gt;");
+	temp.push_back("&lt;<span class='green_code'>form</span>");
+	temp.push_back("&lt;<span class='green_code'>/form</span>&gt;");
+	temp.push_back("&lt;<span class='green_code'>tbody</span>");
+	temp.push_back("&lt;<span class='green_code'>/tbody</span>&gt;");
+	temp.push_back("&lt;<span class='green_code'>th</span>");
+	temp.push_back("&lt;<span class='green_code'>/th</span>&gt;");
+	temp.push_back("&lt;<span class='green_code'>tr</span>");
+	temp.push_back("&lt;<span class='green_code'>/tr</span>&gt;");
+	temp.push_back("&lt;<span class='green_code'>h1</span>");
+	temp.push_back("&lt;<span class='green_code'>/h1</span>&gt;");
+	temp.push_back("&lt;<span class='green_code'>h2</span>");
+	temp.push_back("&lt;<span class='green_code'>/h2</span>&gt;");
+	temp.push_back("&lt;<span class='green_code'>h3</span>");
+	temp.push_back("&lt;<span class='green_code'>/h3</span>&gt;");
+	temp.push_back("&lt;<span class='green_code'>h4</span>");
+	temp.push_back("&lt;<span class='green_code'>/h4</span>&gt;");
+	temp.push_back("&lt;<span class='green_code'>h5</span>");
+	temp.push_back("&lt;<span class='green_code'>/h5</span>&gt;");
+	temp.push_back("&lt;<span class='green_code'>h6</span>");
+	temp.push_back("&lt;<span class='green_code'>/h6</span>&gt;");
+	temp.push_back("&lt;<span class='green_code'>p</span>");
+	temp.push_back("&lt;<span class='green_code'>/p</span>&gt;");
+	temp.push_back("&lt;<span class='green_code'>meta</span>");
+	temp.push_back("&lt;<span class='green_code'>link</span>");
+	temp.push_back("&lt;<span class='green_code'>main</span>");
+	temp.push_back("&lt;<span class='green_code'>/main</span>");
+	temp.push_back("&lt;");
+	temp.push_back("&gt;");
+	return temp;
+}
+
+void Keywords::highlightHTML(string &original)
+{
+	const vector<string> keywords = getHTMLkeywords();
+	const vector<string> highlightedKeywords = getHTMLhighlighted();
+	
+	for(int i=0;i<keywords.size();i++)
+    {
+        size_t start_pos=0;
+        while((start_pos = original.find(keywords[i], start_pos)) != string::npos) 
+        {
+            original.replace(start_pos, keywords[i].length(), highlightedKeywords[i]);
+            start_pos +=highlightedKeywords[i].length();
+        }
+    }
+}
+
 void Keywords::highlight(string& extension, string& code)
 {
 	if(extension=="")
@@ -168,6 +276,12 @@ void Keywords::highlight(string& extension, string& code)
 	if(extension == "cs")
 	{
 		highlightCSharp(code);
+		return;
+	}
+	
+	if(extension == "html" || extension == "php")
+	{
+		highlightHTML(code);
 		return;
 	}
 }
