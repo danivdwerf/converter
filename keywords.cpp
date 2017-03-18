@@ -7,7 +7,7 @@ using namespace std;
 const vector<string> Keywords::getCSharpkeywords()
 {
 	vector<string> temp;
-	
+
 	temp.push_back("<");
 	temp.push_back(">");
 	temp.push_back("GameObject ");
@@ -150,7 +150,7 @@ void Keywords::highlightCSharp(string &original)
 	for(int i=0;i<keywords.size();i++)
     {
         size_t start_pos=0;
-        while((start_pos = original.find(keywords[i], start_pos)) != string::npos) 
+        while((start_pos = original.find(keywords[i], start_pos)) != string::npos)
         {
             original.replace(start_pos, keywords[i].length(), highlightedKeywords[i]);
             start_pos +=highlightedKeywords[i].length();
@@ -161,7 +161,7 @@ void Keywords::highlightCSharp(string &original)
 const vector<string> Keywords::getHTMLkeywords()
 {
 	vector<string> temp;
-	
+
 	temp.push_back("<!DOCTYPE html>");
 	temp.push_back("<html");
 	temp.push_back("</html>");
@@ -207,7 +207,7 @@ const vector<string> Keywords::getHTMLkeywords()
 const vector<string> Keywords::getHTMLhighlighted()
 {
 	vector<string> temp;
-	
+
 	temp.push_back("&lt;<span class='green_code'>!DOCTYPE html</span>&gt;");
 	temp.push_back("&lt;<span class='green_code'>html</span>");
 	temp.push_back("&lt;<span class='green_code'>/html</span>&gt;");
@@ -254,11 +254,11 @@ void Keywords::highlightHTML(string &original)
 {
 	const vector<string> keywords = getHTMLkeywords();
 	const vector<string> highlightedKeywords = getHTMLhighlighted();
-	
+
 	for(int i=0;i<keywords.size();i++)
     {
         size_t start_pos=0;
-        while((start_pos = original.find(keywords[i], start_pos)) != string::npos) 
+        while((start_pos = original.find(keywords[i], start_pos)) != string::npos)
         {
             original.replace(start_pos, keywords[i].length(), highlightedKeywords[i]);
             start_pos +=highlightedKeywords[i].length();
@@ -272,18 +272,16 @@ void Keywords::highlight(string& extension, string& code)
 	{
 		return;
 	}
-	
+
 	if(extension == "cs")
 	{
 		highlightCSharp(code);
 		return;
 	}
-	
+
 	if(extension == "html" || extension == "php")
 	{
 		highlightHTML(code);
 		return;
 	}
 }
-
-

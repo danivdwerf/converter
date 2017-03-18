@@ -7,15 +7,17 @@
 using namespace std;
 class Keywords
 {
-	private: const vector<string> getCSharpkeywords();
-	private: const vector<string> getCSharpHighlighted();
-	private: void highlightCSharp(string &original);
-	
-	private: const vector<string> getHTMLkeywords();
-	private: const vector<string> getHTMLhighlighted();
-	private: void highlightHTML(string &original);
-	
-	public: void highlight(string& extension, string& code);
+	private:
+		const vector<string> getCSharpkeywords();
+		const vector<string> getCSharpHighlighted();
+		void highlightCSharp(string &original);
+
+		const vector<string> getHTMLkeywords();
+		const vector<string> getHTMLhighlighted();
+		void highlightHTML(string &original);
+
+	public:
+		void highlight(string& extension, string& code);
 };
 
 #endif

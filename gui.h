@@ -1,30 +1,33 @@
 #ifndef GUI_H
 #define GUI_H
 
-#include <gtkmm.h>
 #include <iostream>
-#include <gtk/gtk.h>
 #include <string>
+
+#include <gtkmm.h>
+#include <gtk/gtk.h>
+
 using namespace Gtk;
 using namespace std;
 class CreateGui
 {
-	private:GtkWidget* window;
-	private:GtkWidget* fixed;
-	private:GtkWidget* button;
-	private:GtkWidget* entry;
-	private:GtkWidget* textView;
-	private:GtkWidget* scroll;
-	private:GdkColor colour;
-	private: GtkWidget* dialog;
-	
-	public:GtkWidget* createWindow(int width, int height, string title);
-	public:GtkWidget* createContainer();
-	public:GtkWidget* createButton(string label, int x, int y);
-	public:GtkWidget* createEntry(int x, int y, int width, string placeholder);
-	public:GtkWidget* createTextView(string text);
-	public:GtkWidget* createScroller(int width, int height, GtkWidget* widget);
+	private:
+		GtkWidget* window;
+		GtkWidget* fixed;
+		GtkWidget* button;
+		GtkWidget* entry;
+		GtkWidget* textView;
+		GtkWidget* scroll;
+		GtkWidget* dialog;
 
-	public:void destroyWidget(GtkWidget* widget); 
+	public:
+		GtkWidget* createWindow(int width, int height, string title);
+		GtkWidget* createContainer();
+		GtkWidget* createButton(string label, int xPos, int yPos);
+		GtkWidget* createEntry(int xPos, int yPos, int width, string placeholder);
+		GtkWidget* createTextView(string text);
+		GtkWidget* createScroller(int xPos, int yPos, int width, int height, GtkWidget* widget);
+
+		void destroyWidget(GtkWidget* widget);
 };
-#endif 
+#endif
