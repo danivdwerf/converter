@@ -14,6 +14,7 @@ using namespace std;
 	GtkWidget* entry;
 	GtkWidget* textView;
 	GtkWidget* dialog;
+	GtkWidget* menubar;
 
 	GtkWidget* CreateGui::createWindow(int width, int height, string title)
 	{
@@ -58,8 +59,6 @@ using namespace std;
 	{
 		//Create a new button with the given button
  		button = gtk_button_new_with_label (label.c_str());
-
-		//gtk_widget_modify_bg (button, GTK_STATE_NORMAL, &colour);
 
 		//put the button in the container on the given x and y position
 		gtk_fixed_put (GTK_FIXED (fixed), button, xPos, yPos);

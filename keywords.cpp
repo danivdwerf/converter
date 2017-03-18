@@ -2,11 +2,10 @@
 #include <string>
 #include <vector>
 #include <iostream>
-using namespace std;
 
-const vector<string> Keywords::getCSharpkeywords()
+const std::vector<std::string> Keywords::getCSharpkeywords()
 {
-	vector<string> temp;
+	std::vector<std::string> temp;
 
 	temp.push_back("<");
 	temp.push_back(">");
@@ -74,9 +73,9 @@ const vector<string> Keywords::getCSharpkeywords()
 	return temp;
 }
 
-const vector<string> Keywords::getCSharpHighlighted()
+const std::vector<std::string> Keywords::getCSharpHighlighted()
 {
-	vector<string> temp;
+	std::vector<std::string> temp;
 	temp.push_back("&lt;");
 	temp.push_back("&gt;");
 	temp.push_back("<span class='blue_code'>GameObject</span> ");
@@ -143,10 +142,10 @@ const vector<string> Keywords::getCSharpHighlighted()
 	return temp;
 }
 
-void Keywords::highlightCSharp(string &original)
+void Keywords::highlightCSharp(std::string &original)
 {
-	const vector<string> keywords = getCSharpkeywords();
-	const vector<string> highlightedKeywords = getCSharpHighlighted();
+	const std::vector<std::string> keywords = getCSharpkeywords();
+	const std::vector<std::string> highlightedKeywords = getCSharpHighlighted();
 	for(int i=0;i<keywords.size();i++)
     {
         size_t start_pos=0;
@@ -158,9 +157,9 @@ void Keywords::highlightCSharp(string &original)
     }
 }
 
-const vector<string> Keywords::getHTMLkeywords()
+const std::vector<std::string> Keywords::getHTMLkeywords()
 {
-	vector<string> temp;
+	std::vector<std::string> temp;
 
 	temp.push_back("<!DOCTYPE html>");
 	temp.push_back("<html");
@@ -204,9 +203,9 @@ const vector<string> Keywords::getHTMLkeywords()
 	return temp;
 }
 
-const vector<string> Keywords::getHTMLhighlighted()
+const std::vector<std::string> Keywords::getHTMLhighlighted()
 {
-	vector<string> temp;
+	std::vector<std::string> temp;
 
 	temp.push_back("&lt;<span class='green_code'>!DOCTYPE html</span>&gt;");
 	temp.push_back("&lt;<span class='green_code'>html</span>");
@@ -250,10 +249,10 @@ const vector<string> Keywords::getHTMLhighlighted()
 	return temp;
 }
 
-void Keywords::highlightHTML(string &original)
+void Keywords::highlightHTML(std::string &original)
 {
-	const vector<string> keywords = getHTMLkeywords();
-	const vector<string> highlightedKeywords = getHTMLhighlighted();
+	const std::vector<std::string> keywords = getHTMLkeywords();
+	const std::vector<std::string> highlightedKeywords = getHTMLhighlighted();
 
 	for(int i=0;i<keywords.size();i++)
     {
@@ -266,8 +265,9 @@ void Keywords::highlightHTML(string &original)
     }
 }
 
-void Keywords::highlight(string& extension, string& code)
+void Keywords::highlight(std::string& path, std::string& code)
 {
+	std::string extension = getExtension(path);
 	if(extension=="")
 	{
 		return;
@@ -284,4 +284,16 @@ void Keywords::highlight(string& extension, string& code)
 		highlightHTML(code);
 		return;
 	}
+}
+
+std::string Keywords::getExtension(const std::string& path)
+{
+		if(path.find_last_of(".") != std::string::npos)
+		{
+			return path.substr(path.find_last_of(".")+1);
+		}
+		else
+		{
+			return "";
+		}
 }

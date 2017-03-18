@@ -15,9 +15,10 @@ class Keywords
 		const vector<string> getHTMLkeywords();
 		const vector<string> getHTMLhighlighted();
 		void highlightHTML(string &original);
+		string getExtension(const string& path);
 
 	public:
-		void highlight(string& extension, string& code);
+		void highlight(string& path, string& code);
 };
 
 #endif
