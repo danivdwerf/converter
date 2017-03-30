@@ -1,25 +1,20 @@
 #include "keywords.h"
-#include <string>
-#include <vector>
-#include <iostream>
-#include <ctype.h>
 
 void Keywords::highlightCSharp(std::string &original)
 {
-	/*
-	std::vector<std::string> asciiChars = {"<",">","public ", "string ", "using ", "bool ", "private "};
-	std::vector<std::string> newChar = {"&lt","&gt", "<span class='pink_code'>public</span> ", "<span class='pink_code'>string</span> ","<span class='pink_code'>using</span> ", "<span class='pink_code'>bool</span> ", "<span class='pink_code'>private</span> "};
+
+	std::vector<std::string> asciiChars = {"<",">"};
+	std::vector<std::string> newChar = {"&lt;","&gt;"};
 
 	for(int i=0;i<asciiChars.size();i++)
 	{
 		size_t start_pos=0;
-		while((start_pos = original.find(asciiChars[i], start_pos)) != string::npos)
+		while((start_pos = original.find(asciiChars[i], start_pos)) != std::string::npos)
 		{
 			original.replace(start_pos, asciiChars[i].length(), newChar[i]);
 			start_pos += newChar[i].length();
 		}
 	}
-	*/
 
 	std::size_t start_pos = 0;
 	std::size_t end_pos = 0;
@@ -64,18 +59,17 @@ void Keywords::highlightCSharp(std::string &original)
 	//Find classes and make them blue
 	for(int i = 0; i < original.size(); i++)
 	{
-		if(!isupper(original[i]))
-		{
-			continue;
-		}
-
-		if(!isspace(original[i-1]))
-		{
-			continue;
-		}
-
 		start_pos = i;
-		end_pos = original.find_first_of("()<>\n;. ", start_pos+1);
+		if(!isupper(original[start_pos]))
+		{
+			continue;
+		}
+
+		if(!isspace(original[start_pos-1]) && original.substr(start_pos-1, 1) != ";" && original.substr(start_pos-1, 1) != "[")
+		{
+			continue;
+		}
+		end_pos = original.find_first_of("[]()>\n;&. ", start_pos+1);
 		length = end_pos - start_pos;
 		originalWord = original.substr(start_pos, length);
 		original.replace(start_pos, length, "<span class='blue_code'>"+originalWord+"</span>");

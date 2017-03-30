@@ -5,16 +5,15 @@
 #include <vector>
 #include <iostream>
 #include <ctype.h>
-using namespace std;
 class Keywords
 {
 	private:
-		void highlightCSharp(string &original);
-		void highlightHTML(string &original);
-		string getExtension(const string& path);
+		void highlightCSharp(std::string &);
+		void highlightHTML(std::string &);
+		std::string getExtension(const std::string&);
 
 	public:
-		void highlight(string& path, string& code);
+		void highlight(std::string&, std::string&);
 };
 
 #endif

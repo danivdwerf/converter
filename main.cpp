@@ -49,7 +49,7 @@ static void fileChooser(GtkWidget* button, gpointer window)
 void openFile()
 {
 	std::string path = "";
-	ifstream currentFile;
+	std::ifstream currentFile;
 
 	//Check if the path is empty
 	if(path == "")
@@ -85,7 +85,7 @@ void openFile()
 	}
 
 	//Get the text from the file
-	std::string codeFile ((istreambuf_iterator<char>(currentFile)), istreambuf_iterator<char>());
+	std::string codeFile ((std::istreambuf_iterator<char>(currentFile)), std::istreambuf_iterator<char>());
 	//Highlight the text
 	keywords.highlight(path, codeFile);
 	//Create a buffer for the textView
@@ -103,37 +103,28 @@ int main(int argc,char* argv[])
 {
 	//initalize gtk
 	gtk_init(&argc,&argv);
-
 	//Create the window
 	guiWindow = gui.createWindow(640, 360, "FTDConverter");
 	gtk_widget_set_name(guiWindow, "window");
-
 	//Create the fixed container
-	GtkWidget* guiFixed = gui.createContainer();
-
+	GtkWidget* guiFixed = gui.createContainer(guiWindow);
 	//Create the buttons to convert the file
-	GtkWidget* fileButton = gui.createButton("Choose a file", 330, 40);
+	GtkWidget* fileButton = gui.createButton("Choose a file", guiFixed, 330, 40);
 	gtk_widget_set_name(fileButton, "fileButton");
-
-	GtkWidget* convertButton = gui.createButton("Convert your code",330, 80);
+	GtkWidget* convertButton = gui.createButton("Convert your code", guiFixed, 330, 80);
 	gtk_widget_set_name(convertButton, "convertButton");
-
 	//Add eventlisteners to handle button clicks
 	g_signal_connect (convertButton, "clicked", G_CALLBACK(openFile), NULL);
 	g_signal_connect (fileButton, "clicked", G_CALLBACK(fileChooser), guiWindow);
-
 	//Create entry to enter the path in
-	guiEntry = gui.createEntry(330, 0 , 30, "Fill in the path to your file...");
+	guiEntry = gui.createEntry(guiFixed, 330, 0 , 30, "Fill in the path to your file...");
 	gtk_widget_set_name(guiEntry, "inputField");
-
 	//Create Text view to store the new code in
 	guiTextView = gui.createTextView("Fill in the path to your file, or click the choose a file button.\n\nAfter selecting your file, your converted code will be show here after converting.\n\nSelect your code and press cmd+c (ctrl+c) to copy the text to your clipboard.\n\nAvailable languages are:\nUnityC#\n\nThis software is part of: www.freetimedev.com");
 	gtk_widget_set_name(guiTextView, "textWindow");
-
 	//Make textview scrollable, so it won't mess up the window
-	scroller = gui.createScroller(0, 0, 320, 350, guiTextView);
+	scroller = gui.createScroller(guiFixed ,0, 0, 320, 350, guiTextView);
 	gtk_widget_set_name(scroller, "scrollingWindow");
-
 	//Load in a extern stylesheet
 	GtkCssProvider* provider = gtk_css_provider_new ();
 	GdkDisplay *display = gdk_display_get_default ();
@@ -142,7 +133,6 @@ int main(int argc,char* argv[])
 	GError *error = 0;
 	gtk_css_provider_load_from_file(provider, g_file_new_for_path("stylesheet.css"), &error);
 	g_object_unref (provider);
-
 	//Show all widgets
 	gtk_widget_show_all (guiWindow);
 	gtk_main ();
