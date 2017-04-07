@@ -2,13 +2,15 @@
 
 void Keywords::highlightCSharp(std::string &original)
 {
-
 	std::vector<std::string> asciiChars = {"<",">"};
 	std::vector<std::string> newChar = {"&lt;","&gt;"};
+	std::size_t start_pos = 0;
+	std::size_t end_pos = 0;
+	std::size_t length = 0;
+	std::string originalWord = "";
 
 	for(int i=0;i<asciiChars.size();i++)
 	{
-		size_t start_pos=0;
 		while((start_pos = original.find(asciiChars[i], start_pos)) != std::string::npos)
 		{
 			original.replace(start_pos, asciiChars[i].length(), newChar[i]);
@@ -16,17 +18,14 @@ void Keywords::highlightCSharp(std::string &original)
 		}
 	}
 
-	std::size_t start_pos = 0;
-	std::size_t end_pos = 0;
-	std::size_t length = 0;
-	std::string originalWord = "";
 	//Find strings and make them yellow
+	start_pos=0;
 	while((start_pos = original.find("\"", start_pos)) != std::string::npos)
 	{
   	end_pos = original.find_first_of("\"", start_pos+1);
     if (end_pos == std::string::npos)
 		{
-        break;
+        continue;
 		}
     length = end_pos-start_pos;
     originalWord = original.substr(start_pos+1, length-1);
@@ -44,12 +43,14 @@ void Keywords::highlightCSharp(std::string &original)
 			start_pos++;
 			continue;
 		}
+
 		end_pos = original.find_first_of("\n", start_pos);
 		if (end_pos == std::string::npos)
 		{
 			start_pos++;
 			continue;
 		}
+
 		length = end_pos-start_pos;
 		originalWord = original.substr(start_pos, length);
 		original.replace(start_pos, length, "<span class='comment_code'>"+originalWord+"</span>");
@@ -94,8 +95,7 @@ void Keywords::highlightCSharp(std::string &original)
 
 void Keywords::highlightHTML(std::string &original)
 {
-	/*
-	for(int i=0;i<keywords.size();i++)
+	/*for(int i=0;i<keywords.size();i++)
     {
         size_t start_pos=0;
         while((start_pos = original.find(keywords[i], start_pos)) != string::npos)
@@ -103,8 +103,7 @@ void Keywords::highlightHTML(std::string &original)
             original.replace(start_pos, keywords[i].length(), highlightedKeywords[i]);
             start_pos +=highlightedKeywords[i].length();
         }
-    }
-		*/
+    }*/
 }
 
 void Keywords::highlight(std::string& path, std::string& code)
@@ -114,13 +113,11 @@ void Keywords::highlight(std::string& path, std::string& code)
 	{
 		return;
 	}
-
 	if(extension == "cs")
 	{
 		highlightCSharp(code);
 		return;
 	}
-
 	if(extension == "html" || extension == "php")
 	{
 		highlightHTML(code);
@@ -130,12 +127,9 @@ void Keywords::highlight(std::string& path, std::string& code)
 
 std::string Keywords::getExtension(const std::string& path)
 {
-		if(path.find_last_of(".") != std::string::npos)
-		{
-			return path.substr(path.find_last_of(".")+1);
-		}
-		else
+		if(path.find_last_of(".") == std::string::npos)
 		{
 			return "";
 		}
+		return path.substr(path.find_last_of(".")+1);
 }

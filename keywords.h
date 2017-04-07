@@ -1,10 +1,11 @@
-#ifndef KEYWORDS
-#define KEYWORDS
+#ifndef KEYWORDS_H
+#define KEYWORDS_H
 
 #include <string>
 #include <vector>
 #include <iostream>
 #include <ctype.h>
+
 class Keywords
 {
 	private:
@@ -15,5 +16,4 @@ class Keywords
 	public:
 		void highlight(std::string&, std::string&);
 };
-
 #endif

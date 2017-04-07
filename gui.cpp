@@ -1,19 +1,20 @@
 #include "gui.h"
 
-GtkWidget* CreateGui::createWindow(int width, int height, std::string title)
+GtkWidget* CreateGui::createWindow(int width, int height, bool rezisable, std::string title)
 {
 	//create a new toplevel window
  	GtkWidget* window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	//Set the size of the window to the given width and height
  	gtk_widget_set_size_request(window, width, height);
 	//Tell the window it can not be resized
- 	gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
+ 	gtk_window_set_resizable(GTK_WINDOW(window), rezisable);
 	//Set the title of the window to the givven string
  	gtk_window_set_title(GTK_WINDOW(window), title.c_str());
 	//Set the border of the window
  	gtk_container_set_border_width (GTK_CONTAINER(window), 10);
 	//Destroy the window when closing the window
 	g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+  gtk_widget_set_name(window, "window");
 	//Return the window
 	return window;
 }
@@ -32,10 +33,9 @@ GtkWidget* CreateGui::createButton(std::string label, GtkWidget* fixed, int xPos
 {
 	//Create a new button with the given button
  	GtkWidget* button = gtk_button_new_with_label (label.c_str());
-
 	//put the button in the container on the given x and y position
 	gtk_fixed_put (GTK_FIXED (fixed), button, xPos, yPos);
-
+  gtk_widget_set_name(button, "button");
 	//return the button
 	return button;
 }
@@ -50,11 +50,12 @@ GtkWidget* CreateGui::createEntry(GtkWidget* fixed, int xPos, int yPos, int widt
 	gtk_entry_set_width_chars(GTK_ENTRY(entry), width);
 	//Set the placeholder text to the given string
 	gtk_entry_set_text(GTK_ENTRY(entry), placeholder.c_str());
+  gtk_widget_set_name(entry, "inputField");
 	//Return the entry field
 	return entry;
 }
 
-GtkWidget* CreateGui::createTextView(std::string text)
+GtkWidget* CreateGui::createTextView(std::string text, bool editable, bool showCursor)
 {
 	//Create a new textview
 	GtkWidget* textView = gtk_text_view_new();
@@ -63,11 +64,12 @@ GtkWidget* CreateGui::createTextView(std::string text)
 	//Set the text of the buffer to the given text
 	gtk_text_buffer_set_text(buffer,text.c_str(), -1);
 	//Set if the text should be editable or not
-	gtk_text_view_set_editable(GTK_TEXT_VIEW(textView), FALSE);
+	gtk_text_view_set_editable(GTK_TEXT_VIEW(textView), editable);
 	//Set if the caret should be visible
-	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(textView), FALSE);
+	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(textView), showCursor);
 	//Set the wrap mode of the textfield
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(textView), GTK_WRAP_WORD);
+  gtk_widget_set_name(textView, "textView");
 	//return the textview
 	return textView;
 }
@@ -82,6 +84,7 @@ GtkWidget* CreateGui::createScroller(GtkWidget* fixed, int xPos, int yPos, int w
 	gtk_container_add(GTK_CONTAINER(scroll), widget);
 	//Set the scrolling window to the given values
 	gtk_fixed_put (GTK_FIXED (fixed), scroll, xPos, yPos);
+  gtk_widget_set_name(scroll, "scrollingWindow");
 	//Return the scrolling window
 	return scroll;
 }
