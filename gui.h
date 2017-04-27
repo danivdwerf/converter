@@ -8,7 +8,7 @@
 class CreateGui
 {
 	public:
-		GtkWidget* createWindow(int, int, bool, std::string);
+		GtkWidget* createWindow(int, int, bool, std::string, int);
 		GtkWidget* createContainer(GtkWidget*);
 		GtkWidget* createButton(std::string, GtkWidget*, int, int);
 		GtkWidget* createEntry(GtkWidget*, int, int, int, std::string);

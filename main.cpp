@@ -97,7 +97,7 @@ int main(int argc,char* argv[])
 	//initalize gtk
 	gtk_init(&argc,&argv);
 	//Create the window
-	guiWindow = gui.createWindow(640, 360, FALSE, "FTDConverter");
+	guiWindow = gui.createWindow(640, 360, FALSE, "FTDConverter", 10);
 	//Create the fixed container
 	GtkWidget* guiFixed = gui.createContainer(guiWindow);
 	//Create the buttons to convert the file

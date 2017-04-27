@@ -1,6 +1,6 @@
 #include "gui.h"
 
-GtkWidget* CreateGui::createWindow(int width, int height, bool rezisable, std::string title)
+GtkWidget* CreateGui::createWindow(int width, int height, bool rezisable, std::string title, int borderwidth)
 {
 	//create a new toplevel window
  	GtkWidget* window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -11,7 +11,7 @@ GtkWidget* CreateGui::createWindow(int width, int height, bool rezisable, std::s
 	//Set the title of the window to the givven string
  	gtk_window_set_title(GTK_WINDOW(window), title.c_str());
 	//Set the border of the window
- 	gtk_container_set_border_width (GTK_CONTAINER(window), 10);
+ 	gtk_container_set_border_width (GTK_CONTAINER(window), borderwidth);
 	//Destroy the window when closing the window
 	g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
   gtk_widget_set_name(window, "window");
