@@ -14,6 +14,7 @@ class CreateGui
 		GtkWidget* createEntry(GtkWidget*, int, int, int, std::string);
 		GtkWidget* createTextView(std::string, bool, bool);
 		GtkWidget* createScroller(GtkWidget*, int, int, int, int, GtkWidget*);
+		GtkWidget* createImage(GtkWidget*, std::string, int, int);
 		void destroyWidget(GtkWidget* widget);
 };
 #endif

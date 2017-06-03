@@ -89,6 +89,13 @@ GtkWidget* CreateGui::createScroller(GtkWidget* fixed, int xPos, int yPos, int w
 	return scroll;
 }
 
+GtkWidget* CreateGui::createImage(GtkWidget* container, std::string path, int xPos, int yPos)
+{
+  GtkWidget* image = gtk_image_new_from_file(path.c_str());
+  gtk_fixed_put (GTK_FIXED (container), image, xPos, yPos);
+  return image;
+}
+
 void CreateGui::destroyWidget(GtkWidget* widget)
 {
 	//Destroy the given widget
