@@ -4,7 +4,6 @@
 #include <gtkmm.h>
 #include <gtk/gtk.h>
 
-#include "FreeTimeDev/FreeTimeLib.h"
 #include "gui.h"
 #include "keywords.h"
 

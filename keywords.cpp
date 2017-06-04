@@ -2,19 +2,19 @@
 
 void Keywords::highlightCSharp(std::string &original)
 {
-	std::vector<std::string> orininalArray ={"<", ">", "if"};
-	std::vector<std::string> colouredWord ={"&lt;", "&gt;", "<span class='pink_code'>if</span>"};
+	std::vector<std::string> originalArray ={"<", ">", "if", "using"};
+	std::vector<std::string> colouredWord ={"&lt;", "&gt;", "<span class='pink_code'>if</span>", "<span class='pink_code'>using</span>"};
 	std::size_t start_pos = 0;
 	std::size_t end_pos = 0;
 	std::size_t length = 0;
 
 	//Replaces the less than and greather than signs
-	for(int i = 0; i < orininalArray.size(); i++)
+	for(int i = 0; i < originalArray.size(); i++)
 	{
 		start_pos = 0;
-		while((start_pos = original.find(orininalArray[i], start_pos)) != std::string::npos)
+		while((start_pos = original.find(originalArray[i], start_pos)) != std::string::npos)
 		{
-			if(orininalArray[i] == "<" || orininalArray[i] == ">")
+			if(originalArray[i] == "<" || originalArray[i] == ">")
 			{
 				if(original.substr(start_pos+1, 4) == "span" || original.substr(start_pos+1, 5) == "/span")
 				{
@@ -29,7 +29,7 @@ void Keywords::highlightCSharp(std::string &original)
 				}
 			}
 
-			if(orininalArray[i] == "if")
+			if(originalArray[i] == "if")
 			{
 				if(original[start_pos + 2] != '(' && original[start_pos + 3] != '(')
 				{
@@ -37,7 +37,16 @@ void Keywords::highlightCSharp(std::string &original)
 					continue;
 				}
 			}
-			original.replace(start_pos, orininalArray[i].length(), colouredWord[i]);
+
+			if(originalArray[i] == "using")
+			{
+				if(original[start_pos + 5] != ' ' || !isupper(original[start_pos + 6]))
+				{
+					start_pos++;
+					continue;
+				}
+			}
+			original.replace(start_pos, originalArray[i].length(), colouredWord[i]);
 			start_pos += colouredWord[i].length();
 		}
 	}
