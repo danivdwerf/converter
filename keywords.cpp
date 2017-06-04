@@ -2,8 +2,8 @@
 
 void Keywords::highlightCSharp(std::string &original)
 {
-	std::vector<std::string> originalArray ={"<", ">", "if", "using"};
-	std::vector<std::string> colouredWord ={"&lt;", "&gt;", "<span class='pink_code'>if</span>", "<span class='pink_code'>using</span>"};
+	std::vector<std::string> originalArray ={"<", ">", "if", "using", "int", "float", "string", "double", "char"};
+	std::vector<std::string> colouredWord ={"&lt;", "&gt;", "<span class='pink_code'>if</span>", "<span class='pink_code'>using</span>", "<span class='pink_code'>int</span>", "<span class='pink_code'>float</span>", "<span class='pink_code'>string</span>", "<span class='pink_code'>double</span>", "<span class='pink_code'>char</span>"};
 	std::size_t start_pos = 0;
 	std::size_t end_pos = 0;
 	std::size_t length = 0;
@@ -41,6 +41,15 @@ void Keywords::highlightCSharp(std::string &original)
 			if(originalArray[i] == "using")
 			{
 				if(original[start_pos + 5] != ' ' || !isupper(original[start_pos + 6]))
+				{
+					start_pos++;
+					continue;
+				}
+			}
+
+			if(originalArray[i] == "int" || originalArray[i] == "float" || originalArray[i] == "string" || originalArray[i] == "double" || originalArray[i] == "char")
+			{
+				if(original[start_pos - 1] != ' ' || original[start_pos + originalArray[i].length()] != ' ' && original[start_pos+3] != '[')
 				{
 					start_pos++;
 					continue;
