@@ -60,9 +60,9 @@ void openFile()
 	}
 
 	std::string codeFile((std::istreambuf_iterator<char>(currentFile)), std::istreambuf_iterator<char>());
-	keywords->highlight(path, codeFile);
+	std::string highlightedCode = keywords->highlight(path, codeFile);
 	GtkTextBuffer* buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textView));
-	gtk_text_buffer_set_text(buffer, codeFile.c_str(),-1);
+	gtk_text_buffer_set_text(buffer, highlightedCode.c_str(),-1);
 	currentFile.close();
 	path = "";
 	return;

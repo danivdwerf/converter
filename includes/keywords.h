@@ -8,12 +8,14 @@
 
 class Keywords
 {
-	private:
-		void highlightCSharp(std::string &);
-		void highlightHTML(std::string &);
-		std::string getExtension(const std::string&);
+	private: std::string original;
 
-	public:
-		void highlight(std::string&, std::string&);
+	private: void highlightCSharp();
+	private: void highlightHTML();
+	private: std::string getExtension(const std::string);
+	private: bool validType(size_t, int);
+	private: void highlightCSharpMethod(size_t, int);
+
+	public: std::string highlight(std::string, std::string&);
 };
 #endif
