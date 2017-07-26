@@ -2,8 +2,8 @@
 
 void Keywords::highlightCSharp(std::string &original)
 {
-	std::vector<std::string> originalArray ={"<", ">", "if", "using", "int", "float", "string", "double", "char"};
-	std::vector<std::string> colouredWord ={"&lt;", "&gt;", "<span class='pink_code'>if</span>", "<span class='pink_code'>using</span>", "<span class='pink_code'>int</span>", "<span class='pink_code'>float</span>", "<span class='pink_code'>string</span>", "<span class='pink_code'>double</span>", "<span class='pink_code'>char</span>"};
+	std::vector<std::string> originalArray ={"<", ">", "if", "using", "int", "float", "string", "double", "char", "void", "private", "public", "protectet", "sealed"};
+	std::vector<std::string> colouredWord ={"&lt;", "&gt;", "<span class='pink_code'>if</span>", "<span class='pink_code'>using</span>", "<span class='pink_code'>int</span>", "<span class='pink_code'>float</span>", "<span class='pink_code'>string</span>", "<span class='pink_code'>double</span>", "<span class='pink_code'>char</span>", "<span class='pink_code'>void</span>", "<span class='pink_code'>private</span>", "<span class='pink_code'>public</span>", "<span class='pink_code'>protectet</span>", "<span class='pink_code'>sealed</span>"};
 	std::size_t start_pos = 0;
 	std::size_t end_pos = 0;
 	std::size_t length = 0;
@@ -49,7 +49,45 @@ void Keywords::highlightCSharp(std::string &original)
 
 			if(originalArray[i] == "int" || originalArray[i] == "float" || originalArray[i] == "string" || originalArray[i] == "double" || originalArray[i] == "char")
 			{
-				if(original[start_pos - 1] != ' ' || original[start_pos + originalArray[i].length()] != ' ' && original[start_pos+3] != '[')
+				if(original[start_pos - 1] != ' '  && original[start_pos - 1] != '{' & original[start_pos - 1] != '(' || original[start_pos + originalArray[i].length()] != ' ' && original[start_pos+3] != '[')
+				{
+					start_pos++;
+					continue;
+				}
+
+				size_t methodBegin = start_pos+originalArray[i].length()+1;
+				size_t methodEnd = original.find_first_of("(\n=.{", methodBegin);
+				if(methodEnd != std::string::npos)
+				{
+					size_t methodLength = methodEnd - methodBegin;
+					std::string method = original.substr(methodBegin, methodLength);
+					original.replace(methodBegin, methodLength, "<span class='orange_code'>"+method+"</span>");
+				}
+			}
+
+			if(originalArray[i] == "void")
+			{
+				if(original[start_pos -1] != ' ' || original[start_pos + originalArray[i].length()] != ' ')
+				{
+					start_pos++;
+					continue;
+				}
+
+				size_t methodBegin = start_pos+originalArray[i].length()+1;
+				size_t methodEnd = original.find_first_of("(.=", methodBegin);
+				if(methodEnd == std::string::npos)
+				{
+					start_pos++;
+					continue;
+				}
+				size_t methodLength = methodEnd - methodBegin;
+				std::string method = original.substr(methodBegin, methodLength);
+				original.replace(methodBegin, methodLength, "<span class='orange_code'>"+method+"</span>");
+			}
+
+			if(originalArray[i] == "private" || originalArray[i] == "public" || originalArray[i] == "protected" || originalArray[i] == "sealed")
+			{
+				if(original[start_pos + originalArray[i].length()] != ' ')
 				{
 					start_pos++;
 					continue;
@@ -79,6 +117,57 @@ void Keywords::highlightCSharp(std::string &original)
     start_pos = end_pos + 28 + 8;
 	}
 
+	//Looks for words starting with a cap
+	for(int i = 0; i < original.size(); i++)
+	{
+		start_pos = i;
+		if(!isupper(original[start_pos]))
+			continue;
+
+		if(!isspace(original[start_pos-1]) && original.substr(start_pos-1, 1) != ";" && original.substr(start_pos-1, 1) != "[")
+			continue;
+
+		end_pos = original.find_first_of("[]{}()>\n;&. ", start_pos+1);
+		length = end_pos - start_pos;
+		originalWord = original.substr(start_pos, length);
+		original.replace(start_pos, length, "<span class='blue_code'>"+originalWord+"</span>");
+	}
+
+	//Finds words after a period
+	start_pos = 0;
+	while((start_pos = original.find(".", start_pos)) != std::string::npos)
+	{
+		if(isdigit(original[start_pos + 1]) && isdigit(original[start_pos - 1]))
+		{
+			start_pos++;
+			continue;
+		}
+
+		size_t methodBegin = start_pos+1;
+		size_t methodEnd = original.find_first_of("({\n.=", methodBegin);
+		if(methodEnd != std::string::npos)
+		{
+			size_t methodLength = methodEnd - methodBegin;
+			std::string method = original.substr(methodBegin, methodLength);
+			original.replace(methodBegin, methodLength, "<span class='orange_code'>"+method+"</span>");
+			start_pos = start_pos+methodLength + 32;
+			continue;
+		}
+
+		end_pos = original.find_first_of("-+</>*=.;,()[]] ", start_pos+1);
+		if(end_pos == std::string::npos)
+		{
+			start_pos++;
+			continue;
+		}
+
+		start_pos++;
+		length = end_pos-start_pos;
+		originalWord = original.substr(start_pos, length);
+		original.replace(start_pos, length, "<span class='green_code'>"+originalWord+"</span>");
+		start_pos = end_pos + 25 + 7;
+	}
+
 	//Finding comments
 	start_pos = 0;
 	while((start_pos = original.find("/", start_pos)) != std::string::npos)
@@ -101,67 +190,29 @@ void Keywords::highlightCSharp(std::string &original)
 		original.replace(start_pos, length, "<span class='comment_code'>"+originalWord+"</span>");
 		start_pos = end_pos + 27 + 7;
 	}
-
-	//Looks for words starting with a cap
-	for(int i = 0; i < original.size(); i++)
-	{
-		start_pos = i;
-		if(!isupper(original[start_pos]))
-			continue;
-
-		if(!isspace(original[start_pos-1]) && original.substr(start_pos-1, 1) != ";" && original.substr(start_pos-1, 1) != "[")
-			continue;
-
-		end_pos = original.find_first_of("[]()>\n;&. ", start_pos+1);
-		length = end_pos - start_pos;
-		originalWord = original.substr(start_pos, length);
-		original.replace(start_pos, length, "<span class='blue_code'>"+originalWord+"</span>");
-	}
-
-	//Finds words after a period
-	start_pos = 0;
-	while((start_pos = original.find(".", start_pos)) != std::string::npos)
-	{
-		if(isdigit(original[start_pos + 1]) && isdigit(original[start_pos - 1]))
-		{
-			start_pos++;
-			continue;
-		}
-
-		end_pos = original.find_first_of("-+</>*=.;,()[]] ", start_pos+1);
-		if(end_pos == std::string::npos)
-		{
-			start_pos++;
-			continue;
-		}
-
-		length = end_pos-start_pos;
-		originalWord = original.substr(start_pos, length);
-		original.replace(start_pos, length, "<span class='green_code'>"+originalWord+"</span>");
-		start_pos = end_pos + 25 + 7;
-	}
 }
 
 void Keywords::highlightHTML(std::string &original)
 {
-	/*for(int i=0;i<keywords.size();i++)
+	std::vector<std::string> keywords ={"<", ">"};
+	std::vector<std::string> highlightedKeywords ={"&lt;", "&gt;"};
+	for(int i=0;i<keywords.size();i++)
     {
         size_t start_pos=0;
-        while((start_pos = original.find(keywords[i], start_pos)) != string::npos)
+        while((start_pos = original.find(keywords[i], start_pos)) != std::string::npos)
         {
             original.replace(start_pos, keywords[i].length(), highlightedKeywords[i]);
             start_pos +=highlightedKeywords[i].length();
         }
-    }*/
-		original.replace(0, original.length(), "HTML highligting is not supported yet!");
+    }
+		//original.replace(0, original.length(), "HTML highligting is not supported yet!");
 		//Debug::warn("HTML highligting is not supported yet!");
 }
 
 void Keywords::highlight(std::string& path, std::string& code)
 {
 	std::string extension = getExtension(path);
-	if(extension=="")
-		return;
+	if(extension=="") return;
 
 	if(extension == "cs")
 	{
