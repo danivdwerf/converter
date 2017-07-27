@@ -228,6 +228,22 @@ void Keywords::highlightCSharp()
 		start_pos += 6;
 	}
 
+	//Replace this keyword
+	start_pos = 0;
+	while((start_pos = original.find("this", start_pos)) != std::string::npos)
+	{
+		end_pos = original.find_first_of(";.= ");
+		if(end_pos == std::string::npos)
+		{
+			start_pos++;
+			continue;
+		}
+
+		std::string highlighted = "<span class='purple_code'>this</span>";
+		original.replace(start_pos, 4, highlighted);
+		start_pos += 37;
+	}
+
 	//Finding strings
 	start_pos = 0;
 	while((start_pos = original.find("\"", start_pos)) != std::string::npos)
@@ -252,7 +268,7 @@ void Keywords::highlightCSharp()
 		start_pos = i;
 		if(!isupper(original[start_pos]))
 		continue;
-		if(!isspace(original[start_pos-1]) && original.substr(start_pos-1, 1) != ";" && original.substr(start_pos-1, 1) != "[")
+		if(!isspace(original[start_pos-1]) && original.substr(start_pos-1, 1) != ";" && original.substr(start_pos-1, 1) != "[" && original.substr(start_pos-1, 1) != "(")
 			continue;
 
 		end_pos = original.find_first_of("[]{}()<>\n;&. ", start_pos + 1);
