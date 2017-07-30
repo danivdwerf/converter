@@ -13,7 +13,7 @@
 #define WINDOW_HEIGHT 360
 #define WINDOW_WIDTH 640
 
-std::string version = "1.3";
+const std::string version = "1.4";
 
 GtkWidget* window;
 GtkWidget* textView;

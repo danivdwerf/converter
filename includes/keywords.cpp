@@ -243,6 +243,36 @@ void Keywords::highlightCSharp()
 		start_pos += 37;
 	}
 
+	//Replace get keyword
+	start_pos = 0;
+	while((start_pos = original.find("get", start_pos)) != std::string::npos)
+	{
+		if(original[start_pos-1] != '{' && original[start_pos-2] != '{' && original[start_pos-1] != '\n' && original[start_pos+3] != '{' && original[start_pos-3] != '\n')
+		{
+			start_pos++;
+			continue;
+		}
+
+		std::string highlighted = "<span class='pink_code'>get</span>";
+		original.replace(start_pos, 3, highlighted);
+		start_pos += 34;
+	}
+
+	//Replace set keyword
+	start_pos = 0;
+	while((start_pos = original.find("set", start_pos)) != std::string::npos)
+	{
+		if(original[start_pos-1] != '{' && original[start_pos-2] != '{' && original[start_pos-1] != '\n' && original[start_pos+3] != '{' && original[start_pos-3] != '\n')
+		{
+			start_pos++;
+			continue;
+		}
+
+		std::string highlighted = "<span class='pink_code'>set</span>";
+		original.replace(start_pos, 3, highlighted);
+		start_pos += 34;
+	}
+
 	//Replace null keywords
 	start_pos = 0;
 	while ((start_pos = original.find("null", start_pos)) != std::string::npos)
@@ -262,6 +292,42 @@ void Keywords::highlightCSharp()
 		std::string highlighted = "<span class='pink_code'>null</span>";
 		original.replace(start_pos, 4, highlighted);
 		start_pos += 35;
+	}
+
+	//Replace class keywords
+	start_pos = 0;
+	while ((start_pos = original.find("class", start_pos)) != std::string::npos)
+	{
+		if(original[start_pos-1] != ' ' && original[start_pos+5] != ' ')
+		{
+			start_pos++;
+			continue;
+		}
+
+		if(original[start_pos+5] == '=' || original[start_pos+6] == '=')
+		{
+			start_pos++;
+			continue;
+		}
+
+		std::string highlighted = "<span class='pink_code'>class</span>";
+		original.replace(start_pos, 5, highlighted);
+		start_pos += 36;
+	}
+
+	//Replace return keyword
+	start_pos = 0;
+	while((start_pos = original.find("return", start_pos)) != std::string::npos)
+	{
+		if(original[start_pos-1] != ' ' && original[start_pos+6] != ' ')
+		{
+			start_pos++;
+			continue;
+		}
+
+		std::string highlighted = "<span class='pink_code'>return</span>";
+		original.replace(start_pos, 6, highlighted);
+		start_pos += 37;
 	}
 
 	//Replace true keywords
