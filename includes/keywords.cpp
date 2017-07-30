@@ -232,8 +232,7 @@ void Keywords::highlightCSharp()
 	start_pos = 0;
 	while((start_pos = original.find("this", start_pos)) != std::string::npos)
 	{
-		end_pos = original.find_first_of(";.= ");
-		if(end_pos == std::string::npos)
+		if(original[start_pos+4] != ';' && original[start_pos+4] != '.' && original[start_pos-1] != ' ' && original[start_pos-1] != '=')
 		{
 			start_pos++;
 			continue;
@@ -242,6 +241,69 @@ void Keywords::highlightCSharp()
 		std::string highlighted = "<span class='purple_code'>this</span>";
 		original.replace(start_pos, 4, highlighted);
 		start_pos += 37;
+	}
+
+	//Replace null keywords
+	start_pos = 0;
+	while ((start_pos = original.find("null", start_pos)) != std::string::npos)
+	{
+		if(original[start_pos+4] != ';' && original[start_pos+4] != ' ' && original[start_pos+4] != ')')
+		{
+			start_pos++;
+			continue;
+		}
+
+		if(original[start_pos-1] != ' ' && original[start_pos-1] != '=' && original[start_pos-2] != '=')
+		{
+			start_pos++;
+			continue;
+		}
+
+		std::string highlighted = "<span class='pink_code'>null</span>";
+		original.replace(start_pos, 4, highlighted);
+		start_pos += 35;
+	}
+
+	//Replace true keywords
+	start_pos = 0;
+	while ((start_pos = original.find("true", start_pos)) != std::string::npos)
+	{
+		if(original[start_pos-1] != ' ' && original[start_pos-1] != '=' && original[start_pos-2] != '=' && original[start_pos-1] != '(' && original[start_pos-2] != '(')
+		{
+			start_pos++;
+			continue;
+		}
+
+		if(original[start_pos+4] != ' ' && original[start_pos+4] != ';' && original[start_pos+4] != ')')
+		{
+			start_pos++;
+			continue;
+		}
+
+		std::string highlighted = "<span class='purple_code'>true</span>";
+		original.replace(start_pos, 4, highlighted);
+		start_pos += 37;
+	}
+
+	//Replace false keywords
+	start_pos = 0;
+	while ((start_pos = original.find("false", start_pos)) != std::string::npos)
+	{
+		if(original[start_pos-1] != ' ' && original[start_pos-1] != '=' && original[start_pos-2] != '=' && original[start_pos-1] != '(' && original[start_pos-2] != '(')
+		{
+			start_pos++;
+			continue;
+		}
+
+		if(original[start_pos+5] != ' ' && original[start_pos+5] != ';' && original[start_pos+5] != ')')
+		{
+			start_pos++;
+			continue;
+		}
+
+		std::string highlighted = "<span class='purple_code'>false</span>";
+		original.replace(start_pos, 5, highlighted);
+		start_pos += 38;
 	}
 
 	//Finding strings
@@ -329,9 +391,12 @@ void Keywords::highlightCSharp()
 
 bool Keywords::validType(size_t pos, int typeLength)
 {
-	if(original[pos - 1] != ' '  && original[pos - 1] != '{' && original[pos - 1] != '(' || original[pos + typeLength] != ' ' && original[pos + typeLength] != '[')
+	if(original[pos - 1] != ' '  && original[pos - 1] != '{' && original[pos - 1] != '(')
 		return false;
-	return true;
+	else if(original[pos + typeLength] != ' ' && original[pos + typeLength] != '[')
+		return false;
+	else
+		return true;
 }
 
 void Keywords::highlightCSharpMethod(size_t pos, int typeLength)

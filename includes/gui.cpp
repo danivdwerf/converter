@@ -96,22 +96,15 @@ GtkWidget* GUI::createImage(GtkWidget* container, std::string path, int xPos, in
   return temp;
 }
 
-void GUI::createConfirmationWindow(GtkWidget* fixed, std::string title, int width, int height)
+void GUI::setStylesheet(std::string stylesheet)
 {
-  //create a new toplevel window
-  GtkWidget* temp = gtk_window_new(GTK_WINDOW_POPUP);
-  //Set the size of the window to the given width and height
-  gtk_widget_set_size_request(temp, width, height);
-  //Tell the window it can not be resized
-  gtk_window_set_resizable(GTK_WINDOW(temp), FALSE);
-  //Set the title of the window to the givven string
-  gtk_window_set_title(GTK_WINDOW(temp), title.c_str());
-  //Set the border of the window
-  gtk_container_set_border_width (GTK_CONTAINER(temp), 10);
-  gtk_widget_set_name(temp, "popup");
-  gtk_window_set_position (GTK_WINDOW(temp), GTK_WIN_POS_CENTER);
-  gtk_widget_show_all (temp);
-  //this->addToContainer(temp, fixed);
+  GtkCssProvider* provider = gtk_css_provider_new ();
+  GdkDisplay* display = gdk_display_get_default ();
+  GdkScreen* screen = gdk_display_get_default_screen (display);
+  gtk_style_context_add_provider_for_screen (screen, GTK_STYLE_PROVIDER (provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+  GError *error = 0;
+  gtk_css_provider_load_from_file(provider, g_file_new_for_path(stylesheet.c_str()), &error);
+  g_object_unref (provider);
 }
 
 void GUI::destroyWidget(GtkWidget* widget){gtk_widget_destroy(widget);}
@@ -122,5 +115,3 @@ void GUI::setText(std::string message, GtkWidget* textfield)
 	gtk_text_buffer_set_text(buffer, message.c_str(), -1);
 	return;
 }
-
-void GUI::addToContainer(GtkWidget* widget, GtkWidget* fixed){gtk_fixed_put(GTK_FIXED(fixed), widget, 0, 0);}

@@ -1,7 +1,4 @@
-#window
-{
-  background-color: #333333;
-}
+#window{background-color: #333333;}
 
 #button,
 #button:active,
@@ -15,14 +12,13 @@
   background-color: #FFF;
 }
 
-#button:hover
-{
-  box-shadow: inset 0 0 5px #333333;
-}
+#button:hover{box-shadow: inset 0 0 5px #333333;}
 
 #inputField
 {
   color: #000000;
   background-color: #FFFFFF;
   caret-color: #000000;
+  outline: none;
+  border: none;
 }
