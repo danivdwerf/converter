@@ -36,6 +36,13 @@ static void fileChooser(GtkWidget* button, gpointer chooser_data)
 	return;
 }
 
+static void test(GtkTextTag *tag, __attribute__((unused))GObject *arg1, GdkEvent *event, GtkTextIter *arg2, __attribute__((unused))gpointer d)
+{
+  GdkEventButton *event_btn = (GdkEventButton*)event;
+  if (event->type == GDK_BUTTON_RELEASE && event_btn->button == 1)
+    system("open http://www.freetimedev.com/SchoolFiles/IDP/FTDConverter/FTDConverter.dmg");
+}
+
 void openFile()
 {
 	std::string path = "";
@@ -46,7 +53,7 @@ void openFile()
   if(dir != NULL)
   {
 		closedir(dir);
-		gui->setText("We cannot open directories, please only use paths to files", textView);
+		gui->setText("We cannot open directories, please select a valid file", textView);
 		path = "";
 		return;
 	}
@@ -59,10 +66,9 @@ void openFile()
 		return;
 	}
 
-	std::string codeFile((std::istreambuf_iterator<char>(currentFile)), std::istreambuf_iterator<char>());
-	std::string highlightedCode = keywords->highlight(path, codeFile);
-	GtkTextBuffer* buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textView));
-	gtk_text_buffer_set_text(buffer, highlightedCode.c_str(),-1);
+	std::string code((std::istreambuf_iterator<char>(currentFile)), std::istreambuf_iterator<char>());
+	std::string highlightedCode = keywords->highlight(path, code);
+	gui->setText(highlightedCode, textView);
 	currentFile.close();
 	path = "";
 	return;
@@ -70,13 +76,19 @@ void openFile()
 
 void checkUpdate()
 {
+
 	try
 	{
 		std::map<std::string, std::string> headers;
 		headers["Header"] = "Le-Skanque";
 		std::string values = "clientVersion="+version;
 		std::string response = http->sendRequest("http://www.freetimedev.com/SchoolFiles/IDP/FTDConverter/update.php", headers, values);
-		if(response == "outdated") gui->setText("New version available!\ndownload newest version from: http://www.freetimedev.com/SchoolFiles/IDP/FTDConverter/FTDConverter.dmg", textView);
+		if(response == "outdated")
+		{
+			gui->setText("Update available! Click here to download the update", textView);
+			GtkTextTag* tag = gui->setTag(textView, "hyperlink", 23, 28);
+			g_signal_connect(G_OBJECT(tag), "event", G_CALLBACK(test), NULL);
+		}
 	}
 	catch(Poco::Exception& e){return;}
 }

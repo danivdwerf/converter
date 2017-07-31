@@ -96,6 +96,20 @@ GtkWidget* GUI::createImage(GtkWidget* container, std::string path, int xPos, in
   return temp;
 }
 
+GtkTextTag* GUI::setTag(GtkWidget* textview, std::string tag, int start_pos, int end_pos)
+{
+  GtkTextBuffer* buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview));
+  GtkTextTag* tempTag = gtk_text_buffer_create_tag (buffer, tag.c_str(), "foreground", "blue", 0);
+  g_assert(GTK_IS_TEXT_TAG(tempTag));
+
+  GtkTextIter start;
+  gtk_text_buffer_get_iter_at_offset(buffer, &start, start_pos);
+  GtkTextIter end;
+  gtk_text_buffer_get_iter_at_offset(buffer, &end, end_pos);
+  gtk_text_buffer_apply_tag(buffer, tempTag, &start, &end);
+  return tempTag;
+}
+
 void GUI::setStylesheet(std::string stylesheet)
 {
   GtkCssProvider* provider = gtk_css_provider_new ();
