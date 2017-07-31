@@ -10,7 +10,7 @@ class GUI
 {
 	public: GtkWidget* createWindow(int, int, bool, std::string, int);
 	public: GtkWidget* createContainer(GtkWidget*);
-	public: GtkWidget* createButton(std::string, GtkWidget*, int, int);
+	public: GtkWidget* createButton(std::string, GtkWidget*, int, int, int, int, std::string);
 	public: GtkWidget* createEntry(GtkWidget*, int, int, int, std::string);
 	public: GtkWidget* createTextView(std::string, bool, bool);
 	public: GtkWidget* createScroller(GtkWidget*, int, int, int, int, GtkWidget*);

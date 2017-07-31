@@ -29,13 +29,14 @@ GtkWidget* GUI::createContainer(GtkWidget* window)
 	return temp;
 }
 
-GtkWidget* GUI::createButton(std::string label, GtkWidget* fixed, int xPos, int yPos)
+GtkWidget* GUI::createButton(std::string label, GtkWidget* fixed, int xPos, int yPos, int width, int height, std::string id = "button")
 {
 	//Create a new button with the given button
  	GtkWidget* temp = gtk_button_new_with_label (label.c_str());
+  gtk_widget_set_size_request(temp, width, height);
 	//put the button in the container on the given x and y position
 	gtk_fixed_put (GTK_FIXED (fixed), temp, xPos, yPos);
-  gtk_widget_set_name(temp, "button");
+  gtk_widget_set_name(temp, id.c_str());
 	//return the button
 	return temp;
 }
