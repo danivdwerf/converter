@@ -1,7 +1,5 @@
-#include <gtk/gtk.h>
 #include <iostream>
 #include <fstream>
-#include <gtkmm.h>
 #include <string>
 #include <map>
 
@@ -13,8 +11,7 @@
 #define WINDOW_HEIGHT 360
 #define WINDOW_WIDTH 640
 
-const std::string version = "1.55";
-
+const std::string version = "1.56";
 
 GtkWidget* window;
 GtkWidget* textView;
@@ -46,9 +43,9 @@ static void downloadUpdate(GtkTextTag* tag, __attribute__((unused))GObject* obje
 
 void openFile()
 {
-	std::string path = "";
+	gui->setText("Please wait while we run our algorithms", textView);
 	std::ifstream currentFile;
-	if(path == "") path = gtk_entry_get_text(GTK_ENTRY(entryField));
+	std::string path = gtk_entry_get_text(GTK_ENTRY(entryField));
 
   DIR* dir = opendir(path.c_str());
   if(dir != NULL)
@@ -102,9 +99,9 @@ int main(int argc,char* argv[])
 
 	window = gui->createWindow(WINDOW_WIDTH, WINDOW_HEIGHT, FALSE, "FTDConverter", 10);
 	GtkWidget* fixed = gui->createContainer(window);
-	entryField = gui->createEntry(fixed, 400, 0 , 30, "Fill in the path to your file...");
-	GtkWidget* fileButton = gui->createButton("Choose a file", fixed, 400, 32, 226, 35, "fileButton");
-	GtkWidget* convertButton = gui->createButton("Convert your code", fixed, 400, 64, 226, 35, "convertButton");
+	entryField = gui->createEntry(fixed, 405, 0 , 30, "Fill in the path to your file...");
+	GtkWidget* fileButton = gui->createButton("Choose a file", fixed, 405, 32, 228, 35, "fileButton");
+	GtkWidget* convertButton = gui->createButton("Convert your code", fixed, 405, 64, 228, 35, "convertButton");
 	textView = gui->createTextView("Fill in the path to your file, or click the choose a file button.\n\nAfter selecting your file, your converted code will be show here after converting.\n\nSelect your code and press cmd+c (ctrl+c) to copy the text to your clipboard.\n\nAvailable languages are:\nUnityC#", FALSE, FALSE);
 	scrollWindow = gui->createScroller(fixed ,0, 0, 390, 350, textView);
 	GtkWidget* ftdLogo = gui->createImage(fixed, logoPath.c_str(), WINDOW_WIDTH - 50,WINDOW_HEIGHT - 50);
