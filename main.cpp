@@ -11,7 +11,7 @@
 #define WINDOW_HEIGHT 360
 #define WINDOW_WIDTH 640
 
-const std::string version = "1.56";
+const std::string version = "1.6";
 
 GtkWidget* window;
 GtkWidget* textView;
@@ -90,6 +90,20 @@ void checkUpdate()
 	catch(Poco::Exception& e){return;}
 }
 
+static void copyBuffer()
+{
+	GtkTextBuffer* buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textView));
+	GtkTextIter start;
+	gtk_text_buffer_get_iter_at_offset(buffer, &start, 0);
+	GtkTextIter end;
+	gtk_text_buffer_get_iter_at_offset(buffer, &end, -1);
+	gtk_text_buffer_select_range(buffer, &start, &end);
+
+	GdkAtom atom = gdk_atom_intern ("CLIPBOARD", true);
+	GtkClipboard* clipboard = gtk_clipboard_get(atom);
+	gtk_text_buffer_copy_clipboard (buffer, clipboard);
+}
+
 int main(int argc,char* argv[])
 {
 	gtk_init(&argc,&argv);
@@ -102,12 +116,14 @@ int main(int argc,char* argv[])
 	entryField = gui->createEntry(fixed, 405, 0 , 30, "Fill in the path to your file...");
 	GtkWidget* fileButton = gui->createButton("Choose a file", fixed, 405, 32, 228, 35, "fileButton");
 	GtkWidget* convertButton = gui->createButton("Convert your code", fixed, 405, 64, 228, 35, "convertButton");
+	GtkWidget* copyButton = gui->createButton("copy", fixed, 400, 318, 30, 30, "copyButton");
 	textView = gui->createTextView("Fill in the path to your file, or click the choose a file button.\n\nAfter selecting your file, your converted code will be show here after converting.\n\nSelect your code and press cmd+c (ctrl+c) to copy the text to your clipboard.\n\nAvailable languages are:\nUnityC#", FALSE, FALSE);
 	scrollWindow = gui->createScroller(fixed ,0, 0, 390, 350, textView);
 	GtkWidget* ftdLogo = gui->createImage(fixed, logoPath.c_str(), WINDOW_WIDTH - 50,WINDOW_HEIGHT - 50);
 	GtkWidget* gtkLogo = gui->createImage(fixed, gtkPath.c_str(), WINDOW_WIDTH - 100, WINDOW_HEIGHT - 50);
 	g_signal_connect (convertButton, "clicked", G_CALLBACK(openFile), NULL);
 	g_signal_connect (fileButton, "clicked", G_CALLBACK(fileChooser), window);
+	g_signal_connect (copyButton, "clicked", G_CALLBACK(copyBuffer), NULL);
 
 	checkUpdate();
 	gui->setStylesheet(stylePath);
