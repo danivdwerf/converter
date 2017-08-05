@@ -1,2 +1,0 @@
-#!/bin/bash
-clang++ main.cpp includes/keywords.cpp includes/gui.cpp includes/resources.cpp includes/HTTP.cpp -o FTDConverter `pkg-config --cflags --libs gtkmm-3.0` -std=c++11 -lPocoFoundation -lPocoNet -framework CoreFoundation
