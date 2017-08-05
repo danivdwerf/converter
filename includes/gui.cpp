@@ -12,6 +12,7 @@ GtkWidget* GUI::createWindow(int width, int height, bool rezisable, std::string 
  	gtk_window_set_title(GTK_WINDOW(temp), title.c_str());
 	//Set the border of the window
  	gtk_container_set_border_width (GTK_CONTAINER(temp), borderwidth);
+  gtk_window_set_position(GTK_WINDOW(temp), GTK_WIN_POS_CENTER);
 	//Destroy the window when closing the window
 	g_signal_connect(temp, "destroy", G_CALLBACK(gtk_main_quit), NULL);
   gtk_widget_set_name(temp, "window");

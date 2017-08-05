@@ -11,18 +11,22 @@
 #define WINDOW_HEIGHT 360
 #define WINDOW_WIDTH 640
 
+/*Current version*/
 const std::string version = "1.6";
 
+/*GUI variables*/
 GtkWidget* window;
 GtkWidget* textView;
 GtkWidget* entryField;
 GtkWidget* scrollWindow;
 
+/*Create all insances of classes*/
 GUI* gui = new GUI();
 HTTP* http = new HTTP();
 Keywords* keywords = new Keywords();
 Resources* resources = new Resources();
 
+/*Open filechooser window*/
 static void fileChooser(GtkWidget* button, gpointer chooser_data)
 {
 	GtkWidget* dialog = gtk_file_chooser_dialog_new("Open a file", GTK_WINDOW(window), GTK_FILE_CHOOSER_ACTION_OPEN, "_OK", GTK_RESPONSE_OK, "_CANCEL", GTK_RESPONSE_CANCEL, NULL);
@@ -34,6 +38,7 @@ static void fileChooser(GtkWidget* button, gpointer chooser_data)
 	return;
 }
 
+/*Dowload the newest version from website*/
 static void downloadUpdate(GtkTextTag* tag, __attribute__((unused))GObject* object, GdkEvent* event)
 {
   GdkEventButton* eventButton = (GdkEventButton*)event;
@@ -41,6 +46,7 @@ static void downloadUpdate(GtkTextTag* tag, __attribute__((unused))GObject* obje
     system("open http://www.freetimedev.com/SchoolFiles/IDP/FTDConverter/FTDConverter.dmg");
 }
 
+/*Open selected file and highlight code*/
 void openFile()
 {
 	gui->setText("Please wait while we run our algorithms", textView);
@@ -72,6 +78,7 @@ void openFile()
 	return;
 }
 
+/*Check the current version on the website*/
 void checkUpdate()
 {
 	try
@@ -90,13 +97,16 @@ void checkUpdate()
 	catch(Poco::Exception& e){return;}
 }
 
-static void copyBuffer()
+/*Copy content from textview */
+static void copyBufferToClipboard()
 {
 	GtkTextBuffer* buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textView));
+
 	GtkTextIter start;
 	gtk_text_buffer_get_iter_at_offset(buffer, &start, 0);
 	GtkTextIter end;
 	gtk_text_buffer_get_iter_at_offset(buffer, &end, -1);
+
 	gtk_text_buffer_select_range(buffer, &start, &end);
 
 	GdkAtom atom = gdk_atom_intern ("CLIPBOARD", true);
@@ -107,10 +117,13 @@ static void copyBuffer()
 int main(int argc,char* argv[])
 {
 	gtk_init(&argc,&argv);
+
+	/*Get paths based on resources folder*/
 	std::string stylePath = resources->getFilePath("stylesheet.css");
 	std::string logoPath = resources->getFilePath("images/logo.png");
 	std::string gtkPath = resources->getFilePath("images/GTKLogo.png");
 
+	/*Create all gui elements*/
 	window = gui->createWindow(WINDOW_WIDTH, WINDOW_HEIGHT, FALSE, "FTDConverter", 10);
 	GtkWidget* fixed = gui->createContainer(window);
 	entryField = gui->createEntry(fixed, 405, 0 , 30, "Fill in the path to your file...");
@@ -119,11 +132,15 @@ int main(int argc,char* argv[])
 	GtkWidget* copyButton = gui->createButton("copy", fixed, 400, 318, 30, 30, "copyButton");
 	textView = gui->createTextView("Fill in the path to your file, or click the choose a file button.\n\nAfter selecting your file, your converted code will be show here after converting.\n\nSelect your code and press cmd+c (ctrl+c) to copy the text to your clipboard.\n\nAvailable languages are:\nUnityC#", FALSE, FALSE);
 	scrollWindow = gui->createScroller(fixed ,0, 0, 390, 350, textView);
+
+	/*Add logo's*/
 	GtkWidget* ftdLogo = gui->createImage(fixed, logoPath.c_str(), WINDOW_WIDTH - 50,WINDOW_HEIGHT - 50);
 	GtkWidget* gtkLogo = gui->createImage(fixed, gtkPath.c_str(), WINDOW_WIDTH - 100, WINDOW_HEIGHT - 50);
+
+	/*Add eventlisteners to buttons*/
 	g_signal_connect (convertButton, "clicked", G_CALLBACK(openFile), NULL);
 	g_signal_connect (fileButton, "clicked", G_CALLBACK(fileChooser), window);
-	g_signal_connect (copyButton, "clicked", G_CALLBACK(copyBuffer), NULL);
+	g_signal_connect (copyButton, "clicked", G_CALLBACK(copyBufferToClipboard), NULL);
 
 	checkUpdate();
 	gui->setStylesheet(stylePath);
