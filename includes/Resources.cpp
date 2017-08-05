@@ -11,7 +11,7 @@ std::string Resources::getFilePath(std::string relativePath)
   if(startFilename == std::string::npos)
   {
     size_t extensionStart = relativePath.find_first_of('.');
-    if(extensionStart == std::string::npos) return "";
+    if(extensionStart == std::string::npos) return "/";
     filename = relativePath.substr(0, extensionStart);
     extension = relativePath.substr(extensionStart, relativePath.size() - extensionStart);
   }
@@ -51,4 +51,16 @@ std::string Resources::getFileContent(std::string path)
   std::string content((std::istreambuf_iterator<char>(currentFile)), std::istreambuf_iterator<char>());
   currentFile.close();
   return content;
+}
+
+bool Resources::writeToFile(std::string path, std::string content)
+{
+  try
+  {
+    std::ofstream temp;
+    temp.open(path);
+    temp<<content;
+    return true;
+  }
+  catch(std::ofstream::failure e){return false;}
 }

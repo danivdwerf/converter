@@ -10,7 +10,7 @@
 #define WINDOW_WIDTH 640
 
 /*Current version*/
-const std::string version = "1.61";
+const std::string version = "1.7";
 
 /*GUI variables*/
 GtkWidget* window;
@@ -90,6 +90,42 @@ static void copyBufferToClipboard()
 	gtk_text_buffer_copy_clipboard (buffer, clipboard);
 }
 
+static void showExample()
+{
+	GtkTextBuffer* buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textView));
+	GtkTextIter start; gtk_text_buffer_get_iter_at_offset(buffer, &start, 0);
+	GtkTextIter end; gtk_text_buffer_get_iter_at_offset(buffer, &end, -1);
+	std::string highlightedCode = gtk_text_buffer_get_text (buffer, &start, &end, false);
+
+	std::string html = "\0";
+	html += "<!DOCTYPE html>\0";
+	html += "<head>\0";
+	html += "<meta charset='utf-8' />\0";
+	html += "</head>\0";
+	html += "<html>\0";
+	html += "<body>\0";
+
+	html += "<style>";
+	html += "pre {color: white;padding: 0.5em;margin: 0;background-color: #222;overflow-x: auto;}";
+	html += "code .pink_code{color: #ff3385;}";
+	html += "code .blue_code{color: #00bfff;}";
+	html += "code .orange_code{color: darkorange;}";
+	html += "code .green_code{color:#00C78C;}";
+	html += "code .comment_code, code .comment_code *{color:#999 !important;}";
+	html += "code .purple_code{color: #cc66ff;}";
+	html += "code .yellow_code{color: #ffe066;}";
+	html += "</style>";
+
+	html += "<pre>\0";
+	html += "<code>\0";
+	html += highlightedCode;
+	html += "</code>\0";
+	html += "</pre>\0";
+	html += "</body>\0";
+	resources->writeToFile("file.html", html);
+	system("open file.html");
+}
+
 int main(int argc,char* argv[])
 {
 	gtk_init(&argc,&argv);
@@ -105,7 +141,8 @@ int main(int argc,char* argv[])
 	entryField = gui->createEntry(fixed, 405, 0 , 30, "Fill in the path to your file...");
 	GtkWidget* fileButton = gui->createButton("Choose a file", fixed, 405, 32, 228, 35, "fileButton");
 	GtkWidget* convertButton = gui->createButton("Convert your code", fixed, 405, 64, 228, 35, "convertButton");
-	GtkWidget* copyButton = gui->createButton("copy", fixed, 400, 318, 30, 30, "copyButton");
+	GtkWidget* copyButton = gui->createButton("copy", fixed, 400, 280, 30, 30, "copyButton");
+	GtkWidget* exampleButton = gui->createButton("preview", fixed, 400, 318, 50, 30, "copyButton");
 	textView = gui->createTextView("Fill in the path to your file, or click the choose a file button.\n\nAfter selecting your file, your converted code will be show here after converting.\n\nSelect your code and press cmd+c (ctrl+c) to copy the text to your clipboard.\n\nAvailable languages are:\nUnityC#", FALSE, FALSE);
 	scrollWindow = gui->createScroller(fixed ,0, 0, 390, 350, textView);
 
@@ -117,6 +154,7 @@ int main(int argc,char* argv[])
 	g_signal_connect (convertButton, "clicked", G_CALLBACK(highlightCode), NULL);
 	g_signal_connect (fileButton, "clicked", G_CALLBACK(fileChooser), window);
 	g_signal_connect (copyButton, "clicked", G_CALLBACK(copyBufferToClipboard), NULL);
+	g_signal_connect (exampleButton, "clicked", G_CALLBACK(showExample), NULL);
 
 	checkUpdate();
 	gui->setStylesheet(stylePath);
