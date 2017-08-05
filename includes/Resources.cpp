@@ -39,3 +39,16 @@ std::string Resources::getFilePath(std::string relativePath)
   path.replace(0, 7, "");
   return path;
 }
+
+std::string Resources::getFileContent(std::string path)
+{
+  std::ifstream currentFile;
+  try{currentFile.open(path.c_str());}
+  catch(std::ifstream::failure e) {return "";}
+
+  if(!currentFile.is_open()) return "";
+
+  std::string content((std::istreambuf_iterator<char>(currentFile)), std::istreambuf_iterator<char>());
+  currentFile.close();
+  return content;
+}

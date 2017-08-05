@@ -1,5 +1,3 @@
-#include <iostream>
-#include <fstream>
 #include <string>
 #include <map>
 
@@ -12,7 +10,7 @@
 #define WINDOW_WIDTH 640
 
 /*Current version*/
-const std::string version = "1.6";
+const std::string version = "1.61";
 
 /*GUI variables*/
 GtkWidget* window;
@@ -47,35 +45,13 @@ static void downloadUpdate(GtkTextTag* tag, __attribute__((unused))GObject* obje
 }
 
 /*Open selected file and highlight code*/
-void openFile()
+void highlightCode()
 {
 	gui->setText("Please wait while we run our algorithms", textView);
-	std::ifstream currentFile;
 	std::string path = gtk_entry_get_text(GTK_ENTRY(entryField));
-
-  DIR* dir = opendir(path.c_str());
-  if(dir != NULL)
-  {
-		closedir(dir);
-		gui->setText("We cannot open directories, please select a valid file", textView);
-		path = "";
-		return;
-	}
-
-	currentFile.open(path.c_str());
-	if(!currentFile.is_open())
-	{
-		gui->setText("Something went wrong while opening your file :(\nPlease try again", textView);
-		path = "";
-		return;
-	}
-
-	std::string code((std::istreambuf_iterator<char>(currentFile)), std::istreambuf_iterator<char>());
-	std::string highlightedCode = keywords->highlight(path, code);
+	std::string content = resources->getFileContent(path);
+	std::string highlightedCode = keywords->highlight(path, content);
 	gui->setText(highlightedCode, textView);
-	currentFile.close();
-	path = "";
-	return;
 }
 
 /*Check the current version on the website*/
@@ -138,7 +114,7 @@ int main(int argc,char* argv[])
 	GtkWidget* gtkLogo = gui->createImage(fixed, gtkPath.c_str(), WINDOW_WIDTH - 100, WINDOW_HEIGHT - 50);
 
 	/*Add eventlisteners to buttons*/
-	g_signal_connect (convertButton, "clicked", G_CALLBACK(openFile), NULL);
+	g_signal_connect (convertButton, "clicked", G_CALLBACK(highlightCode), NULL);
 	g_signal_connect (fileButton, "clicked", G_CALLBACK(fileChooser), window);
 	g_signal_connect (copyButton, "clicked", G_CALLBACK(copyBufferToClipboard), NULL);
 
