@@ -90,6 +90,7 @@ static void copyBufferToClipboard()
 	gtk_text_buffer_copy_clipboard (buffer, clipboard);
 }
 
+/*Create HTML file with converted code*/
 static void showExample()
 {
 	GtkTextBuffer* buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textView));
@@ -105,15 +106,15 @@ static void showExample()
 	html += "<html>\0";
 	html += "<body>\0";
 
-	html += "<style>";
-	html += "pre {color: white;padding: 0.5em;margin: 0;background-color: #222;overflow-x: auto;}";
-	html += "code .pink_code{color: #ff3385;}";
-	html += "code .blue_code{color: #00bfff;}";
-	html += "code .orange_code{color: darkorange;}";
-	html += "code .green_code{color:#00C78C;}";
-	html += "code .comment_code, code .comment_code *{color:#999 !important;}";
-	html += "code .purple_code{color: #cc66ff;}";
-	html += "code .yellow_code{color: #ffe066;}";
+	html += "<style>\0";
+	html += "pre {color: white;padding: 0.5em;margin: 0;background-color: #222;overflow-x: auto;}\0";
+	html += "code .pink_code{color: #ff3385;}\0";
+	html += "code .blue_code{color: #00bfff;}\0";
+	html += "code .orange_code{color: darkorange;}\0";
+	html += "code .green_code{color:#00C78C;}\0";
+	html += "code .comment_code, code .comment_code *{color:#999 !important;}\0";
+	html += "code .purple_code{color: #cc66ff;}\0";
+	html += "code .yellow_code{color: #ffe066;}\0";
 	html += "</style>";
 
 	html += "<pre>\0";
@@ -122,8 +123,11 @@ static void showExample()
 	html += "</code>\0";
 	html += "</pre>\0";
 	html += "</body>\0";
-	resources->writeToFile("file.html", html);
-	system("open file.html");
+
+	std::string path = resources->getFilePath("preview.html");
+	resources->writeToFile(path, html);
+	std::string command = "open " + path;
+	system(command.c_str());
 }
 
 int main(int argc,char* argv[])
