@@ -10,13 +10,11 @@
 #define WINDOW_WIDTH 640
 
 /*Current version*/
-const std::string version = "1.7";
+const std::string version = "1.73";
 
 /*GUI variables*/
-GtkWidget* window;
 GtkWidget* textView;
 GtkWidget* entryField;
-GtkWidget* scrollWindow;
 
 /*Create all insances of classes*/
 GUI* gui = new GUI();
@@ -25,7 +23,7 @@ Keywords* keywords = new Keywords();
 Resources* resources = new Resources();
 
 /*Open filechooser window*/
-static void fileChooser(GtkWidget* button, gpointer chooser_data)
+static void fileChooser(GtkWidget* button, gpointer window)
 {
 	GtkWidget* dialog = gtk_file_chooser_dialog_new("Open a file", GTK_WINDOW(window), GTK_FILE_CHOOSER_ACTION_OPEN, "_OK", GTK_RESPONSE_OK, "_CANCEL", GTK_RESPONSE_CANCEL, NULL);
 	gtk_widget_show_all(dialog);
@@ -60,7 +58,7 @@ void checkUpdate()
 	try
 	{
 		std::map<std::string, std::string> headers;
-		headers["Header"] = "Le-Skanque";
+		headers["Connection"] = "keep-alive";
 		std::string values = "clientVersion="+version;
 		std::string response = http->sendRequest("http://www.freetimedev.com/SchoolFiles/IDP/FTDConverter/update.php", headers, values);
 		if(response == "outdated")
@@ -140,7 +138,7 @@ int main(int argc,char* argv[])
 	std::string gtkPath = resources->getFilePath("images/GTKLogo.png");
 
 	/*Create all gui elements*/
-	window = gui->createWindow(WINDOW_WIDTH, WINDOW_HEIGHT, FALSE, "FTDConverter", 10);
+	GtkWidget* window = gui->createWindow(WINDOW_WIDTH, WINDOW_HEIGHT, FALSE, "FTDConverter", 10);
 	GtkWidget* fixed = gui->createContainer(window);
 	entryField = gui->createEntry(fixed, 405, 0 , 30, "Fill in the path to your file...");
 	GtkWidget* fileButton = gui->createButton("Choose a file", fixed, 405, 32, 228, 35, "fileButton");
@@ -148,7 +146,7 @@ int main(int argc,char* argv[])
 	GtkWidget* copyButton = gui->createButton("copy", fixed, 400, 280, 30, 30, "copyButton");
 	GtkWidget* exampleButton = gui->createButton("preview", fixed, 400, 318, 50, 30, "copyButton");
 	textView = gui->createTextView("Fill in the path to your file, or click the choose a file button.\n\nAfter selecting your file, your converted code will be show here after converting.\n\nSelect your code and press cmd+c (ctrl+c) to copy the text to your clipboard.\n\nAvailable languages are:\nUnityC#", FALSE, FALSE);
-	scrollWindow = gui->createScroller(fixed ,0, 0, 390, 350, textView);
+	GtkWidget* scrollWindow = gui->createScroller(fixed, 0, 0, 390, 350, textView);
 
 	/*Add logo's*/
 	GtkWidget* ftdLogo = gui->createImage(fixed, logoPath.c_str(), WINDOW_WIDTH - 50,WINDOW_HEIGHT - 50);

@@ -168,6 +168,27 @@ void Keywords::highlightCSharp()
 		start_pos += highlighted.length();
 	}
 
+	//Replace var keywords
+	start_pos = 0;
+	while ((start_pos = original.find("var", start_pos)) != std::string::npos)
+	{
+		if(original[start_pos-1] != ' ' && original[start_pos-1] != '(')
+		{
+			start_pos++;
+			continue;
+		}
+
+		if(original[start_pos+3] != ' ')
+		{
+			start_pos++;
+			continue;
+		}
+
+		std::string highlighted = "<span class='purple_code'>var</span>";
+		original.replace(start_pos, 3, highlighted);
+		start_pos += 35;
+	}
+
 	//Replace private keyword
 	start_pos = 0;
 	while((start_pos = original.find("private", start_pos)) != std::string::npos)
@@ -370,6 +391,48 @@ void Keywords::highlightCSharp()
 		std::string highlighted = "<span class='purple_code'>false</span>";
 		original.replace(start_pos, 5, highlighted);
 		start_pos += 38;
+	}
+
+	//Replace const keywords
+	start_pos = 0;
+	while ((start_pos = original.find("const", start_pos)) != std::string::npos)
+	{
+		if(original[start_pos-1] != ' ' &&  original[start_pos-1] != '(' && original[start_pos-2] != '(')
+		{
+			start_pos++;
+			continue;
+		}
+
+		if(original[start_pos+5] != ' ')
+		{
+			start_pos++;
+			continue;
+		}
+
+		std::string highlighted = "<span class='purple_code'>const</span>";
+		original.replace(start_pos, 5, highlighted);
+		start_pos += 38;
+	}
+
+	//Replace static keywords
+	start_pos = 0;
+	while ((start_pos = original.find("static", start_pos)) != std::string::npos)
+	{
+		if(original[start_pos-1] != ' ' &&  original[start_pos-1] != '(' && original[start_pos-2] != '(')
+		{
+			start_pos++;
+			continue;
+		}
+
+		if(original[start_pos+6] != ' ')
+		{
+			start_pos++;
+			continue;
+		}
+
+		std::string highlighted = "<span class='purple_code'>static</span>";
+		original.replace(start_pos, 6, highlighted);
+		start_pos += 39;
 	}
 
 	//Finding strings
