@@ -47,8 +47,56 @@ void Keywords::highlightCSharp()
 			continue;
 		}
 
+		if(original[start_pos - 1] != ' ' && original[start_pos - 1] != '\t')
+		{
+			start_pos++;
+			continue;
+		}
+
 		std::string highlighted = "<span class='pink_code'>if</span>";
 		original.replace(start_pos, 2, highlighted);
+		start_pos += highlighted.length();
+	}
+
+	//Replace else keyword
+	start_pos = 0;
+	while((start_pos = original.find("else", start_pos)) != std::string::npos)
+	{
+		if(original[start_pos + 4] != ' ' && original[start_pos + 4] != '{' && original[start_pos + 4] != '\n')
+		{
+			start_pos++;
+			continue;
+		}
+
+		if(original[start_pos - 1] != ' ' && original[start_pos - 1] != '\t')
+		{
+			start_pos++;
+			continue;
+		}
+
+		std::string highlighted = "<span class='pink_code'>else</span>";
+		original.replace(start_pos, 4, highlighted);
+		start_pos += highlighted.length();
+	}
+
+	//Replace while keyword
+	start_pos = 0;
+	while((start_pos = original.find("while", start_pos)) != std::string::npos)
+	{
+		if(original[start_pos + 5] != '(' && original[start_pos + 6] != '(')
+		{
+			start_pos++;
+			continue;
+		}
+
+		if(original[start_pos - 1] != ' ' && original[start_pos - 1] != '\t')
+		{
+			start_pos++;
+			continue;
+		}
+
+		std::string highlighted = "<span class='pink_code'>while</span>";
+		original.replace(start_pos, 5, highlighted);
 		start_pos += highlighted.length();
 	}
 
@@ -80,6 +128,22 @@ void Keywords::highlightCSharp()
 
 		std::string highlighted = "<span class='pink_code'>int</span>";
 		original.replace(start_pos, 3, highlighted);
+		start_pos += highlighted.length();
+	}
+
+	//Replace bool keyword and methods after it
+	start_pos = 0;
+	while((start_pos = original.find("bool", start_pos)) != std::string::npos)
+	{
+		if(!validType(start_pos, 4))
+		{
+			start_pos++;
+			continue;
+		}
+		highlightCSharpMethod(start_pos, 4);
+
+		std::string highlighted = "<span class='pink_code'>bool</span>";
+		original.replace(start_pos, 4, highlighted);
 		start_pos += highlighted.length();
 	}
 
@@ -167,12 +231,32 @@ void Keywords::highlightCSharp()
 		original.replace(start_pos, 4, highlighted);
 		start_pos += highlighted.length();
 	}
+	//Replace enum keywords
+	start_pos = 0;
+	while ((start_pos = original.find("enum", start_pos)) != std::string::npos)
+	{
+		if(original[start_pos - 1] != ' ' && original[start_pos - 1] != '\t')
+		{
+			start_pos++;
+			continue;
+		}
+
+		if(original[start_pos + 4] != ' ')
+		{
+			start_pos++;
+			continue;
+		}
+
+		std::string highlighted = "<span class='pink_code'>enum</span>";
+		original.replace(start_pos, 4, highlighted);
+		start_pos += highlighted.length();
+	}
 
 	//Replace var keywords
 	start_pos = 0;
 	while ((start_pos = original.find("var", start_pos)) != std::string::npos)
 	{
-		if(original[start_pos-1] != ' ' && original[start_pos-1] != '(')
+		if(original[start_pos-1] != ' ' && original[start_pos-1] != '(' && original[start_pos - 1] != '\t')
 		{
 			start_pos++;
 			continue;
@@ -184,9 +268,9 @@ void Keywords::highlightCSharp()
 			continue;
 		}
 
-		std::string highlighted = "<span class='purple_code'>var</span>";
+		std::string highlighted = "<span class='pink_code'>var</span>";
 		original.replace(start_pos, 3, highlighted);
-		start_pos += 35;
+		start_pos += highlighted.length();
 	}
 
 	//Replace private keyword
@@ -201,7 +285,7 @@ void Keywords::highlightCSharp()
 
 		std::string highlighted = "<span class='pink_code'>private</span>";
 		original.replace(start_pos, 7, highlighted);
-		start_pos += 7;
+		start_pos += highlighted.length();
 	}
 
 	//Replace public keyword and methods after it
@@ -216,7 +300,7 @@ void Keywords::highlightCSharp()
 
 		std::string highlighted = "<span class='pink_code'>public</span>";
 		original.replace(start_pos, 6, highlighted);
-		start_pos += 6;
+		start_pos += highlighted.length();
 	}
 
 	//Replace protected keyword and methods after it
@@ -231,7 +315,7 @@ void Keywords::highlightCSharp()
 
 		std::string highlighted = "<span class='pink_code'>protected</span>";
 		original.replace(start_pos, 9, highlighted);
-		start_pos += 9;
+		start_pos += highlighted.length();
 	}
 
 	//Replace sealed keyword and methods after it
@@ -246,7 +330,7 @@ void Keywords::highlightCSharp()
 
 		std::string highlighted = "<span class='pink_code'>sealed</span>";
 		original.replace(start_pos, 6, highlighted);
-		start_pos += 6;
+		start_pos += highlighted.length();
 	}
 
 	//Replace this keyword
@@ -261,7 +345,7 @@ void Keywords::highlightCSharp()
 
 		std::string highlighted = "<span class='purple_code'>this</span>";
 		original.replace(start_pos, 4, highlighted);
-		start_pos += 37;
+		start_pos += highlighted.length();
 	}
 
 	//Replace get keyword
@@ -276,7 +360,7 @@ void Keywords::highlightCSharp()
 
 		std::string highlighted = "<span class='pink_code'>get</span>";
 		original.replace(start_pos, 3, highlighted);
-		start_pos += 34;
+		start_pos += highlighted.length();
 	}
 
 	//Replace set keyword
@@ -291,7 +375,7 @@ void Keywords::highlightCSharp()
 
 		std::string highlighted = "<span class='pink_code'>set</span>";
 		original.replace(start_pos, 3, highlighted);
-		start_pos += 34;
+		start_pos += highlighted.length();
 	}
 
 	//Replace null keywords
@@ -312,7 +396,49 @@ void Keywords::highlightCSharp()
 
 		std::string highlighted = "<span class='pink_code'>null</span>";
 		original.replace(start_pos, 4, highlighted);
-		start_pos += 35;
+		start_pos += highlighted.length();
+	}
+
+	//Replace new keywords
+	start_pos = 0;
+	while ((start_pos = original.find("new", start_pos)) != std::string::npos)
+	{
+		if(original[start_pos+3] != ' ')
+		{
+			start_pos++;
+			continue;
+		}
+
+		if(original[start_pos-1] != ' ' && original[start_pos-1] != '=' && original[start_pos-2] != '=')
+		{
+			start_pos++;
+			continue;
+		}
+
+		std::string highlighted = "<span class='pink_code'>new</span>";
+		original.replace(start_pos, 3, highlighted);
+		start_pos += highlighted.length();
+	}
+
+	//Replace new keywords
+	start_pos = 0;
+	while ((start_pos = original.find("yield", start_pos)) != std::string::npos)
+	{
+		if(original[start_pos+5] != ' ')
+		{
+			start_pos++;
+			continue;
+		}
+
+		if(original[start_pos-1] != ' ' && original[start_pos-1] != '\t')
+		{
+			start_pos++;
+			continue;
+		}
+
+		std::string highlighted = "<span class='pink_code'>yield</span>";
+		original.replace(start_pos, 5, highlighted);
+		start_pos += highlighted.length();
 	}
 
 	//Replace class keywords
@@ -333,14 +459,14 @@ void Keywords::highlightCSharp()
 
 		std::string highlighted = "<span class='pink_code'>class</span>";
 		original.replace(start_pos, 5, highlighted);
-		start_pos += 36;
+		start_pos += highlighted.length();
 	}
 
 	//Replace return keyword
 	start_pos = 0;
 	while((start_pos = original.find("return", start_pos)) != std::string::npos)
 	{
-		if(original[start_pos-1] != ' ' && original[start_pos+6] != ' ')
+		if(original[start_pos-1] != ' ' && original[start_pos - 1] != '\t' && original[start_pos+6] != ' ')
 		{
 			start_pos++;
 			continue;
@@ -348,7 +474,7 @@ void Keywords::highlightCSharp()
 
 		std::string highlighted = "<span class='pink_code'>return</span>";
 		original.replace(start_pos, 6, highlighted);
-		start_pos += 37;
+		start_pos += highlighted.length();
 	}
 
 	//Replace true keywords
@@ -369,7 +495,7 @@ void Keywords::highlightCSharp()
 
 		std::string highlighted = "<span class='purple_code'>true</span>";
 		original.replace(start_pos, 4, highlighted);
-		start_pos += 37;
+		start_pos += highlighted.length();
 	}
 
 	//Replace false keywords
@@ -390,14 +516,14 @@ void Keywords::highlightCSharp()
 
 		std::string highlighted = "<span class='purple_code'>false</span>";
 		original.replace(start_pos, 5, highlighted);
-		start_pos += 38;
+		start_pos += highlighted.length();
 	}
 
 	//Replace const keywords
 	start_pos = 0;
 	while ((start_pos = original.find("const", start_pos)) != std::string::npos)
 	{
-		if(original[start_pos-1] != ' ' &&  original[start_pos-1] != '(' && original[start_pos-2] != '(')
+		if(original[start_pos-1] != ' ' &&  original[start_pos-1] != '(' && original[start_pos-2] != '(' && original[start_pos - 1] != '\t')
 		{
 			start_pos++;
 			continue;
@@ -409,9 +535,9 @@ void Keywords::highlightCSharp()
 			continue;
 		}
 
-		std::string highlighted = "<span class='purple_code'>const</span>";
+		std::string highlighted = "<span class='pink_code'>const</span>";
 		original.replace(start_pos, 5, highlighted);
-		start_pos += 38;
+		start_pos += highlighted.length();
 	}
 
 	//Replace static keywords
@@ -430,9 +556,9 @@ void Keywords::highlightCSharp()
 			continue;
 		}
 
-		std::string highlighted = "<span class='purple_code'>static</span>";
+		std::string highlighted = "<span class='pink_code'>static</span>";
 		original.replace(start_pos, 6, highlighted);
-		start_pos += 39;
+		start_pos += highlighted.length();
 	}
 
 	//Finding strings
@@ -450,7 +576,7 @@ void Keywords::highlightCSharp()
     originalWord = original.substr(start_pos+1, length-1);
     std::string newWord = "<span class='yellow_code'>\"" + originalWord + "\"</span>";
     original.replace(start_pos, length+1, newWord);
-    start_pos = end_pos + 28 + 8;
+    start_pos = end_pos + newWord.length();
 	}
 
 	//Looks for words starting with a cap

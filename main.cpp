@@ -10,7 +10,7 @@
 #define WINDOW_WIDTH 640
 
 /*Current version*/
-const std::string version = "1.73";
+const std::string version = "1.8";
 
 /*GUI variables*/
 GtkWidget* textView;
@@ -113,6 +113,9 @@ static void showExample()
 	html += "code .comment_code, code .comment_code *{color:#999 !important;}\0";
 	html += "code .purple_code{color: #cc66ff;}\0";
 	html += "code .yellow_code{color: #ffe066;}\0";
+	html += ".line-number{color:white;display:block;float:left;margin:0 1em 0 -1em;border-right:1px solid;text-align:right;}";
+	html += ".line-number span{display:block;padding:0 .5em 0 1em;}";
+  html += ".cl{display:block;clear:both;}";
 	html += "</style>";
 
 	html += "<pre>\0";
@@ -120,6 +123,18 @@ static void showExample()
 	html += highlightedCode;
 	html += "</code>\0";
 	html += "</pre>\0";
+
+	html += "<script type='text/javascript'>";
+	html += "const pre = document.getElementsByTagName('pre');\0";
+	html += "for (let i = 0; i < pre.length; i++){\0";
+	html += "pre[i].innerHTML = '<span class=\"line-number\"></span>' + pre[i].innerHTML + '<span class=\"cl\"></span>';\0";
+	html += "const num = pre[i].innerHTML.split(/\\n/).length;\0";
+	html += "for (var j = 0; j < num; j++){\0";
+	html +=	"let line_num = pre[i].getElementsByTagName('span')[0];\0";
+	html +=	"line_num.innerHTML += '<span>' + (j + 1) + '</span>';\0";
+	html += "}};\0";
+	html += "</script>";
+
 	html += "</body>\0";
 
 	std::string path = resources->getFilePath("preview.html");

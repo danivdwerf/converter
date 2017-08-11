@@ -2,7 +2,6 @@
 #define GUI_H
 
 #include <string>
-#include <gtkmm.h>
 #include <gtk/gtk.h>
 #include <iostream>
 
