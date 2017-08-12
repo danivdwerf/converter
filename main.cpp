@@ -8,9 +8,7 @@
 
 #define WINDOW_HEIGHT 360
 #define WINDOW_WIDTH 640
-
-/*Current version*/
-const std::string version = "1.8";
+#define VERSION 1.85
 
 /*GUI variables*/
 GtkWidget* textView;
@@ -32,7 +30,7 @@ static void fileChooser(GtkWidget* button, gpointer window)
 		gtk_entry_set_text(GTK_ENTRY(entryField), gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)));
 	gtk_widget_destroy(dialog);
 	return;
-
+}
 
 /*Dowload the newest version from website*/
 static void downloadUpdate(GtkTextTag* tag, __attribute__((unused))GObject* object, GdkEvent* event)
@@ -59,8 +57,8 @@ void checkUpdate()
 	{
 		std::map<std::string, std::string> headers;
 		headers["Connection"] = "keep-alive";
-		std::string values = "clientVersion="+version;
-		std::string response = http->sendRequest("http://www.freetimedev.com/SchoolFiles/IDP/FTDConverter/update.php", headers, values);
+		std::string values = "clientVersion=" + std::to_string(VERSION);
+		std::string response = http->sendRequest("http://freetimedev.com/resources/projects/FTDConverter/update.php", headers, values);
 		if(response == "outdated")
 		{
 			gui->setText("Update available! Click here to download the update", textView);
@@ -126,7 +124,7 @@ static void showExample()
 	system(command.c_str());
 }
 
-int main(int argc,char* argv[])
+int main(int argc, char* argv[])
 {
 	gtk_init(&argc,&argv);
 
