@@ -112,6 +112,23 @@ GtkTextTag* GUI::setTag(GtkWidget* textview, std::string tag, int start_pos, int
   return tempTag;
 }
 
+/*Copy content from textview */
+void GUI::copyBufferToClipboard(GtkWidget* button, gpointer textView)
+{
+	GtkTextBuffer* buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textView));
+
+	GtkTextIter start;
+	gtk_text_buffer_get_iter_at_offset(buffer, &start, 0);
+	GtkTextIter end;
+	gtk_text_buffer_get_iter_at_offset(buffer, &end, -1);
+
+	gtk_text_buffer_select_range(buffer, &start, &end);
+
+	GdkAtom atom = gdk_atom_intern ("CLIPBOARD", true);
+	GtkClipboard* clipboard = gtk_clipboard_get(atom);
+	gtk_text_buffer_copy_clipboard (buffer, clipboard);
+}
+
 void GUI::setStylesheet(std::string stylesheet)
 {
   GtkCssProvider* provider = gtk_css_provider_new ();

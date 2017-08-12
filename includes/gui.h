@@ -18,5 +18,6 @@ class GUI
 	public: void setStylesheet(std::string);
 	public: void destroyWidget(GtkWidget* widget);
 	public: void setText(std::string, GtkWidget*);
+	public: static void copyBufferToClipboard(GtkWidget*, gpointer);
 };
 #endif

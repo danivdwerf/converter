@@ -124,8 +124,8 @@ void Keywords::highlightCSharp()
 			start_pos++;
 			continue;
 		}
-		highlightCSharpMethod(start_pos, 3);
 
+		highlightCSharpMethod(start_pos, 3);
 		std::string highlighted = "<span class='pink_code'>int</span>";
 		original.replace(start_pos, 3, highlighted);
 		start_pos += highlighted.length();
@@ -140,8 +140,8 @@ void Keywords::highlightCSharp()
 			start_pos++;
 			continue;
 		}
-		highlightCSharpMethod(start_pos, 4);
 
+		highlightCSharpMethod(start_pos, 4);
 		std::string highlighted = "<span class='pink_code'>bool</span>";
 		original.replace(start_pos, 4, highlighted);
 		start_pos += highlighted.length();
@@ -158,7 +158,6 @@ void Keywords::highlightCSharp()
 		}
 
 		highlightCSharpMethod(start_pos, 5);
-
 		std::string highlighted = "<span class='pink_code'>float</span>";
 		original.replace(start_pos, 5, highlighted);
 		start_pos += highlighted.length();
@@ -175,9 +174,24 @@ void Keywords::highlightCSharp()
 		}
 
 		highlightCSharpMethod(start_pos, 6);
-
 		std::string highlighted = "<span class='pink_code'>string</span>";
 		original.replace(start_pos, 6, highlighted);
+		start_pos += highlighted.length();
+	}
+
+	//Replace IEnumerator keyword and methods after it
+	start_pos = 0;
+	while((start_pos = original.find("IEnumerator", start_pos)) != std::string::npos)
+	{
+		if(!validType(start_pos, 11))
+		{
+			start_pos++;
+			continue;
+		}
+
+		highlightCSharpMethod(start_pos, 11);
+		std::string highlighted = "<span class='blue_code'>IEnumerator</span>";
+		original.replace(start_pos, 11, highlighted);
 		start_pos += highlighted.length();
 	}
 
@@ -192,7 +206,6 @@ void Keywords::highlightCSharp()
 		}
 
 		highlightCSharpMethod(start_pos, 6);
-
 		std::string highlighted = "<span class='pink_code'>double</span>";
 		original.replace(start_pos, 6, highlighted);
 		start_pos += highlighted.length();
@@ -209,7 +222,6 @@ void Keywords::highlightCSharp()
 		}
 
 		highlightCSharpMethod(start_pos, 4);
-
 		std::string highlighted = "<span class='pink_code'>char</span>";
 		original.replace(start_pos, 4, highlighted);
 		start_pos += highlighted.length();
@@ -226,7 +238,6 @@ void Keywords::highlightCSharp()
 		}
 
 		highlightCSharpMethod(start_pos, 4);
-
 		std::string highlighted = "<span class='pink_code'>void</span>";
 		original.replace(start_pos, 4, highlighted);
 		start_pos += highlighted.length();
@@ -270,6 +281,27 @@ void Keywords::highlightCSharp()
 
 		std::string highlighted = "<span class='pink_code'>var</span>";
 		original.replace(start_pos, 3, highlighted);
+		start_pos += highlighted.length();
+	}
+
+	//Replace value keywords
+	start_pos = 0;
+	while ((start_pos = original.find("value", start_pos)) != std::string::npos)
+	{
+		if(original[start_pos-1] != ' ' && original[start_pos-1] != '(' && original[start_pos - 1] != '{' && original[start_pos - 1] != '<' && original[start_pos - 2] != '<' && original[start_pos - 1] != '>' && original[start_pos - 2] != '>' && original[start_pos - 1] != '=' && original[start_pos - 2] != '=')
+		{
+			start_pos++;
+			continue;
+		}
+
+		if(original[start_pos + 5] != ';' && original[start_pos + 5] != '=' && original[start_pos + 6] != '=' && original[start_pos + 5] != '<' && original[start_pos + 6] != '<' && original[start_pos + 5] != '>' && original[start_pos + 6] != '>')
+		{
+			start_pos++;
+			continue;
+		}
+
+		std::string highlighted = "<span class='pink_code'>value</span>";
+		original.replace(start_pos, 5, highlighted);
 		start_pos += highlighted.length();
 	}
 
@@ -646,9 +678,9 @@ void Keywords::highlightCSharp()
 
 bool Keywords::validType(size_t pos, int typeLength)
 {
-	if(original[pos - 1] != ' '  && original[pos - 1] != '{' && original[pos - 1] != '(')
+	if(original[pos - 1] != ' '  && original[pos - 1] != '{' && original[pos - 1] != '(' && original[pos - 1] != ';')
 		return false;
-	else if(original[pos + typeLength] != ' ' && original[pos + typeLength] != '[')
+	else if(original[pos + typeLength] != ' ' && original[pos + typeLength] != '[' && original[pos + typeLength] != '&')
 		return false;
 	else
 		return true;

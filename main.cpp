@@ -27,12 +27,12 @@ static void fileChooser(GtkWidget* button, gpointer window)
 {
 	GtkWidget* dialog = gtk_file_chooser_dialog_new("Open a file", GTK_WINDOW(window), GTK_FILE_CHOOSER_ACTION_OPEN, "_OK", GTK_RESPONSE_OK, "_CANCEL", GTK_RESPONSE_CANCEL, NULL);
 	gtk_widget_show_all(dialog);
-	int resp=gtk_dialog_run(GTK_DIALOG(dialog));
-	if(resp==GTK_RESPONSE_OK)
+	int resp = gtk_dialog_run(GTK_DIALOG(dialog));
+	if(resp == GTK_RESPONSE_OK)
 		gtk_entry_set_text(GTK_ENTRY(entryField), gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)));
 	gtk_widget_destroy(dialog);
 	return;
-}
+
 
 /*Dowload the newest version from website*/
 static void downloadUpdate(GtkTextTag* tag, __attribute__((unused))GObject* object, GdkEvent* event)
@@ -69,23 +69,6 @@ void checkUpdate()
 		}
 	}
 	catch(Poco::Exception& e){return;}
-}
-
-/*Copy content from textview */
-static void copyBufferToClipboard()
-{
-	GtkTextBuffer* buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textView));
-
-	GtkTextIter start;
-	gtk_text_buffer_get_iter_at_offset(buffer, &start, 0);
-	GtkTextIter end;
-	gtk_text_buffer_get_iter_at_offset(buffer, &end, -1);
-
-	gtk_text_buffer_select_range(buffer, &start, &end);
-
-	GdkAtom atom = gdk_atom_intern ("CLIPBOARD", true);
-	GtkClipboard* clipboard = gtk_clipboard_get(atom);
-	gtk_text_buffer_copy_clipboard (buffer, clipboard);
 }
 
 /*Create HTML file with converted code*/
@@ -170,7 +153,7 @@ int main(int argc,char* argv[])
 	/*Add eventlisteners to buttons*/
 	g_signal_connect (convertButton, "clicked", G_CALLBACK(highlightCode), NULL);
 	g_signal_connect (fileButton, "clicked", G_CALLBACK(fileChooser), window);
-	g_signal_connect (copyButton, "clicked", G_CALLBACK(copyBufferToClipboard), NULL);
+	g_signal_connect (copyButton, "clicked", G_CALLBACK(gui->copyBufferToClipboard), textView);
 	g_signal_connect (exampleButton, "clicked", G_CALLBACK(showExample), NULL);
 
 	checkUpdate();
