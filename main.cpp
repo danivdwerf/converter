@@ -8,7 +8,7 @@
 
 #define WINDOW_HEIGHT 360
 #define WINDOW_WIDTH 640
-#define VERSION 1
+#define VERSION 1.9
 
 /*GUI variables*/
 GtkWidget* textView;
