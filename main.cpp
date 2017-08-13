@@ -8,7 +8,7 @@
 
 #define WINDOW_HEIGHT 360
 #define WINDOW_WIDTH 640
-#define VERSION 1.85
+#define VERSION 1
 
 /*GUI variables*/
 GtkWidget* textView;
@@ -33,11 +33,11 @@ static void fileChooser(GtkWidget* button, gpointer window)
 }
 
 /*Dowload the newest version from website*/
-static void downloadUpdate(GtkTextTag* tag, __attribute__((unused))GObject* object, GdkEvent* event)
+void downloadUpdate(GtkTextTag* tag, __attribute__((unused))GObject* object, GdkEvent* event)
 {
   GdkEventButton* eventButton = (GdkEventButton*)event;
   if (event->type == GDK_BUTTON_RELEASE && eventButton->button == 1)
-    system("open http://www.freetimedev.com/SchoolFiles/IDP/FTDConverter/FTDConverter.dmg");
+    system("open http://www.freetimedev.com/resources/projects/FTDConverter/FTDConverter.dmg");
 }
 
 /*Open selected file and highlight code*/
@@ -70,7 +70,7 @@ void checkUpdate()
 }
 
 /*Create HTML file with converted code*/
-static void showExample()
+void showExample()
 {
 	GtkTextBuffer* buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textView));
 	GtkTextIter start; gtk_text_buffer_get_iter_at_offset(buffer, &start, 0);
