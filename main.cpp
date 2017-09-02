@@ -94,6 +94,7 @@ void showExample()
 	html += "code .comment_code, code .comment_code *{color:#999 !important;}\0";
 	html += "code .purple_code{color: #cc66ff;}\0";
 	html += "code .yellow_code{color: #ffe066;}\0";
+	html += "code .red_code{color: #cc243d}\0";
 	html += ".line-number{color:white;display:block;float:left;margin:0 1em 0 -1em;border-right:1px solid;text-align:right;}";
 	html += ".line-number span{display:block;padding:0 .5em 0 1em;}";
   html += ".cl{display:block;clear:both;}";

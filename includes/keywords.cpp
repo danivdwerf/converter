@@ -701,19 +701,97 @@ void Keywords::highlightCSharpMethod(size_t pos, int typeLength)
 
 void Keywords::highlightHTML()
 {
-	std::vector<std::string> keywords ={"<", ">"};
-	std::vector<std::string> highlightedKeywords ={"&lt;", "&gt;"};
-	for(int i=0;i<keywords.size();i++)
-    {
-        size_t start_pos=0;
-        while((start_pos = original.find(keywords[i], start_pos)) != std::string::npos)
-        {
-            original.replace(start_pos, keywords[i].length(), highlightedKeywords[i]);
-            start_pos +=highlightedKeywords[i].length();
-        }
-    }
-		//original.replace(0, original.length(), "HTML highligting is not supported yet!");
-		//Debug::warn("HTML highligting is not supported yet!");
+	std::string originalWord = "";
+	std::size_t start_pos = 0;
+	std::size_t end_pos = 0;
+	std::size_t length = 0;
+
+	//Replace less than character
+	start_pos = 0;
+	while((start_pos = original.find('<', start_pos)) != std::string::npos)
+	{
+		size_t gt = original.find_first_of(">", start_pos);
+		size_t nl = original.find_first_of("\n", start_pos);
+		if(nl < gt)
+		{
+			start_pos++;
+			continue;
+		}
+
+		std::string highlighted = "&lt;";
+		original.replace(start_pos, 1, highlighted);
+		start_pos += highlighted.length();
+	}
+
+	//Replace greater than character
+	start_pos = 0;
+	while((start_pos = original.find('>', start_pos)) != std::string::npos)
+	{
+		if(original[start_pos-1] == ' ')
+		{
+			start_pos++;
+			continue;
+		}
+
+		std::string highlighted = "&gt;";
+		if(original[start_pos-1] == '/')
+		{
+			start_pos = start_pos-1;
+			highlighted = "/&gtc";
+		}
+		original.replace(start_pos, 1, highlighted);
+		start_pos += highlighted.length();
+	}
+
+	start_pos = 0;
+	while((start_pos = original.find("&lt;", start_pos)) != std::string::npos)
+	{
+		std::string highlighted = "<span class='red_code'>&lt;";
+		original.replace(start_pos, 4, highlighted);
+		start_pos += highlighted.length();
+
+		size_t space = original.find_first_of(' ', start_pos);
+		if(space == std::string::npos)
+			continue;
+
+		size_t gt = original.find("&gt;", start_pos);
+		if(gt == std::string::npos)
+			continue;
+
+		if(space > gt)
+			continue;
+
+		original.replace(space, 1, " <span class='green_code'>");
+		std::string previous(1, original[gt+24]);
+		std::string test = previous + "</span>";
+		original.replace(gt+24, 1, test);
+	}
+
+	start_pos = 0;
+	while((start_pos = original.find("&gt;", start_pos)) != std::string::npos)
+	{
+		std::string highlighted = "&gt;</span>";
+		original.replace(start_pos, 4, highlighted);
+		start_pos += highlighted.length();
+	}
+
+	//Finding strings
+	start_pos = 0;
+	while((start_pos = original.find("\"", start_pos)) != std::string::npos)
+	{
+		end_pos = original.find_first_of("\"", start_pos+1);
+		if (end_pos == std::string::npos)
+		{
+			start_pos++;
+			continue;
+		}
+
+		length = end_pos-start_pos;
+		originalWord = original.substr(start_pos+1, length-1);
+		std::string newWord = "<span class='yellow_code'>\"" + originalWord + "\"</span>";
+		original.replace(start_pos, length+1, newWord);
+		start_pos = end_pos + newWord.length();
+	}
 }
 
 std::string Keywords::highlight(std::string path, std::string &code)
