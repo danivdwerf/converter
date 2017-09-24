@@ -1,3 +1,4 @@
+#ifdef __APPLE__
 #ifndef RESOURCES_H
 #define RESOURCES_H
 
@@ -13,4 +14,5 @@ class Resources
   public: std::string getFileContent(std::string);
   public: bool writeToFile(std::string, std::string);
 };
+#endif
 #endif

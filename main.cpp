@@ -1,14 +1,17 @@
 #include <string>
 #include <map>
 
+#ifdef __APPLE__
 #include "includes/Resources.h"
+#endif
 #include "includes/keywords.h"
 #include "includes/HTTP.h"
 #include "includes/gui.h"
 
 #define WINDOW_HEIGHT 360
 #define WINDOW_WIDTH 640
-#define VERSION 1.9
+#define APP_NAME "FTDConverter"
+#define VERSION 2
 
 /*GUI variables*/
 GtkWidget* textView;
@@ -18,7 +21,9 @@ GtkWidget* entryField;
 GUI* gui = new GUI();
 HTTP* http = new HTTP();
 Keywords* keywords = new Keywords();
+#ifdef __APPLE__
 Resources* resources = new Resources();
+#endif
 
 /*Open filechooser window*/
 static void fileChooser(GtkWidget* button, gpointer window)
@@ -37,7 +42,15 @@ void downloadUpdate(GtkTextTag* tag, __attribute__((unused))GObject* object, Gdk
 {
   GdkEventButton* eventButton = (GdkEventButton*)event;
   if (event->type == GDK_BUTTON_RELEASE && eventButton->button == 1)
-    system("open http://www.freetimedev.com/resources/projects/FTDConverter/FTDConverter.dmg");
+	{
+		#ifdef __APPLE_
+    	system("open http://www.freetimedev.com/resources/projects/FTDConverter/FTDConverter.dmg");
+		#endif
+
+		#ifdef _WIN32
+			ShellExecute(NULL, TEXT("open"), TEXT("http://www.freetimedev.com/resources/projects/FTDConverter/FTDConverter-installer.exe"), NULL, NULL, SW_SHOWDEFAULT);
+		#endif
+	}
 }
 
 /*Open selected file and highlight code*/
@@ -119,10 +132,20 @@ void showExample()
 
 	html += "</body>\0";
 
-	std::string path = resources->getFilePath("preview.html");
+	std::string path = "preview.html";
+	#ifdef __APPLE__
+		path = resources->getFilePath(path);
+	#endif
 	resources->writeToFile(path, html);
-	std::string command = "open " + path;
-	system(command.c_str());
+
+	#ifdef __APPLE__
+		std::string command = "open " + path;
+		system(command.c_str());
+	#endif
+
+	#ifdef _WIN32
+		ShellExecute(NULL, TEXT("open"), TEXT("preview.html"));
+	#endif
 }
 
 int main(int argc, char* argv[])
@@ -130,12 +153,24 @@ int main(int argc, char* argv[])
 	gtk_init(&argc,&argv);
 
 	/*Get paths based on resources folder*/
-	std::string stylePath = resources->getFilePath("stylesheet.css");
-	std::string logoPath = resources->getFilePath("images/logo.png");
-	std::string gtkPath = resources->getFilePath("images/GTKLogo.png");
+	std::string stylePath;
+	std::string logoPath;
+	std::string gtkPath;
+
+	#ifdef __APPLE__
+		stylePath = resources->getFilePath("stylesheet.css");
+		logoPath = resources->getFilePath("images/logo.png");
+		gtkPath = resources->getFilePath("images/GTKLogo.png");
+	#endif
+
+	#ifdef _WIN32
+		stylePath = "resources/stylesheet.css";
+		logoPath = "resources/images/logo.png";
+		gtkPath = "resources/images/GTKLogo.png";
+	#endif
 
 	/*Create all gui elements*/
-	GtkWidget* window = gui->createWindow(WINDOW_WIDTH, WINDOW_HEIGHT, FALSE, "FTDConverter", 10);
+	GtkWidget* window = gui->createWindow(WINDOW_WIDTH, WINDOW_HEIGHT, FALSE, APP_NAME, 10);
 	GtkWidget* fixed = gui->createContainer(window);
 	entryField = gui->createEntry(fixed, 405, 0 , 30, "Fill in the path to your file...");
 	GtkWidget* fileButton = gui->createButton("Choose a file", fixed, 405, 32, 228, 35, "fileButton");
