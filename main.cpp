@@ -74,7 +74,6 @@ void checkUpdate() noexcept
 		response = http->sendRequest("http://freetimedev.com/resources/projects/FTDConverter/update.php", headers, values);
 	#endif
 
-	std::cout << response << '\n';
 	if(response != "outdated")
 		return;
 
