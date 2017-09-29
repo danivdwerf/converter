@@ -12,12 +12,13 @@
 #endif
 
 #ifdef _WIN32
-  #include <windows.h>
-  #include <wininet.h>
+  #include <Windows.h>
+  #include <WinInet.h>
 #endif
 
 #include <sstream>
 #include <string>
+#include <iostream>
 #include <map>
 
 class HTTP
@@ -27,7 +28,7 @@ class HTTP
   #endif
 
   #ifdef _WIN32
-    public: std::string sendRequest(int, LPCSTR, LPCSTR, LPCSTR, LPCSTR);
+    public: std::string sendRequest(LPCSTR, LPCSTR, LPCSTR, LPCSTR, LPCSTR);
   #endif
 };
 #endif

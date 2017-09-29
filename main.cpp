@@ -1,9 +1,7 @@
 #include <string>
 #include <map>
 
-#ifdef __APPLE__
 #include "includes/Resources.h"
-#endif
 #include "includes/keywords.h"
 #include "includes/HTTP.h"
 #include "includes/gui.h"
@@ -21,9 +19,7 @@ GtkWidget* entryField;
 GUI* gui = new GUI();
 HTTP* http = new HTTP();
 Keywords* keywords = new Keywords();
-#ifdef __APPLE__
 Resources* resources = new Resources();
-#endif
 
 /*Open filechooser window*/
 static void fileChooser(GtkWidget* button, gpointer window)
@@ -64,22 +60,27 @@ void highlightCode()
 }
 
 /*Check the current version on the website*/
-void checkUpdate()
+void checkUpdate() noexcept
 {
-	try
-	{
+	std::string response;
+	#ifdef _WIN32
+		response = http->sendRequest("POST", "www.freetimedev.com", "/resources/projects/FTDConverter/update.php", "Content-Type: application/x-www-form-urlencoded", "clientVersion=2");
+	#endif
+
+	#ifdef __APPLE__
 		std::map<std::string, std::string> headers;
 		headers["Connection"] = "keep-alive";
 		std::string values = "clientVersion=" + std::to_string(VERSION);
-		std::string response = http->sendRequest("http://freetimedev.com/resources/projects/FTDConverter/update.php", headers, values);
-		if(response == "outdated")
-		{
-			gui->setText("Update available! Click here to download the update", textView);
-			GtkTextTag* tag = gui->setTag(textView, "hyperlink", 23, 28);
-			g_signal_connect(G_OBJECT(tag), "event", G_CALLBACK(downloadUpdate), NULL);
-		}
-	}
-	catch(Poco::Exception& e){return;}
+		response = http->sendRequest("http://freetimedev.com/resources/projects/FTDConverter/update.php", headers, values);
+	#endif
+
+	std::cout << response << '\n';
+	if(response != "outdated")
+		return;
+
+	gui->setText("Update available! Click here to download the update", textView);
+	GtkTextTag* tag = gui->setTag(textView, "hyperlink", 23, 28);
+	g_signal_connect(G_OBJECT(tag), "event", G_CALLBACK(downloadUpdate), NULL);
 }
 
 /*Create HTML file with converted code*/
@@ -144,7 +145,7 @@ void showExample()
 	#endif
 
 	#ifdef _WIN32
-		ShellExecute(NULL, TEXT("open"), TEXT("preview.html"));
+		ShellExecute(NULL, TEXT("open"), TEXT("preview.html"), NULL, NULL, SW_SHOWDEFAULT);
 	#endif
 }
 
@@ -164,9 +165,9 @@ int main(int argc, char* argv[])
 	#endif
 
 	#ifdef _WIN32
-		stylePath = "resources/stylesheet.css";
-		logoPath = "resources/images/logo.png";
-		gtkPath = "resources/images/GTKLogo.png";
+		stylePath = "stylesheet.css";
+		logoPath = "images/logo.png";
+		gtkPath = "images/GTKLogo.png";
 	#endif
 
 	/*Create all gui elements*/

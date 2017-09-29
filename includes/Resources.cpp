@@ -1,6 +1,5 @@
-#ifdef __APPLE__
 #include "Resources.h"
-
+#ifdef __APPLE__
 std::string Resources::getFilePath(std::string relativePath)
 {
   size_t startFilename = relativePath.find_last_of('/');
@@ -40,7 +39,7 @@ std::string Resources::getFilePath(std::string relativePath)
   path.replace(0, 7, "");
   return path;
 }
-
+#endif
 std::string Resources::getFileContent(std::string path)
 {
   std::ifstream currentFile;
@@ -65,4 +64,3 @@ bool Resources::writeToFile(std::string path, std::string content)
   }
   catch(std::ofstream::failure e){return false;}
 }
-#endif

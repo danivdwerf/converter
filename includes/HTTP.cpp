@@ -28,45 +28,42 @@ std::string HTTP::sendRequest(std::string url, std::map<std::string, std::string
 #endif
 
 #ifdef _WIN32
-std::string HTTP::sendRequest(int method, LPCSTR host, LPCSTR url, LPCSTR header, LPCSTR data)
+
+std::string HTTP::sendRequest(LPCSTR method, LPCSTR host, LPCSTR url, LPCSTR header, LPCSTR data)
 {
-    char httpUserAgent[512];
-    DWORD szhttpUserAgent = sizeof(httpUseragent);
-    ObtainUserAgentString(0, httpUseragent, &szhttpUserAgent);
+  std::string response;
+  HINTERNET hInternet = InternetOpen(TEXT("httpRequest"), INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
+  HINTERNET session = InternetConnect(hInternet, host, INTERNET_DEFAULT_HTTP_PORT, NULL, NULL, INTERNET_SERVICE_HTTP, 0, 0);
+  HINTERNET request = HttpOpenRequest(session, method, url, "HTTP/1.1", NULL, NULL, INTERNET_FLAG_HYPERLINK, NULL);
 
-    char m[5];
-    if(method == GET)
-  		strcpy(m, "GET");
-  	else
-  		strcpy(m, "POST");
+  int datalen = 0;
+  if(data != NULL)
+    datalen = strlen(data);
 
-    HINTERNET internet = InternetOpenA(httpUseragent, INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
-    if(internet == NULL)
+  int headerlen = 0;
+  if(header != NULL)
+    headerlen = strlen(header);
+
+  BOOL res = HttpSendRequest(request, header, headerlen, (char*)data, datalen);
+
+  if(res)
+  {
+    const int buffSize = 1024;
+    char buff[buffSize];
+
+    bool read = true;
+    DWORD bytesRead = -1;
+    while(read && bytesRead != 0)
     {
-      InternetCloseHandle(internet);
-      return NULL;
+      read = InternetReadFile(request, buff, buffSize, &bytesRead);
+      response.append(buff, bytesRead);
     }
+  }
 
-    HINTERNET connect = InternetConnectA(internet, host, INTERNET_DEFAULT_HTTP_PORT, NULL, NULL, INTERNET_SERVICE_HTTP, 0, 0);
-    if(connect == NULL)
-    {
-      InternetCloseHandle(connect);
-      return NULL;
-    }
+  InternetCloseHandle(request);
+  InternetCloseHandle(session);
+  InternetCloseHandle(hInternet);
 
-    HINTERNET request = HttpOpenRequestA(connect, m, url, "HTTP/1.1", NULL, NULL, INTERNET_FLAG_HYPERLINK | INTERNET_FLAG_IGNORE_CERT_CN_INVALID | INTERNET_FLAG_IGNORE_CERT_DATE_INVALID | INTERNET_FLAG_IGNORE_REDIRECT_TO_HTTP  | INTERNET_FLAG_IGNORE_REDIRECT_TO_HTTPS | INTERNET_FLAG_NO_AUTH | INTERNET_FLAG_NO_CACHE_WRITE | INTERNET_FLAG_NO_UI | INTERNET_FLAG_PRAGMA_NOCACHE | INTERNET_FLAG_RELOAD, NULL);
-
-    if(request == NULL)
-      return NULL;
-
-    int datalen = 0;
-    if(data != NULL)
-      datalen = strlen(data);
-    int headerlen = 0;
-    if(header != NULL)
-      headerlen = strlen(header);
-
-    	HttpSendRequestA(request, header, headerlen, data, datalen);
-      InternetCloseHandle(request);
+  return response;
 }
 #endif
