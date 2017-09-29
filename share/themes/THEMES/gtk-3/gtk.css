@@ -1,6 +1,8 @@
 #window{background-color: #333333;}
 
-#inputField
+#inputField,
+#inputField:active,
+#inputField:focus
 {
   color: #333333;
   background-color: #FFFFFF;
@@ -11,7 +13,9 @@
   border-top-right-radius: 1em;
 }
 
-#fileButton
+#fileButton,
+#fileButton:active,
+#fileButton:checked
 {
   border: 1px solid #333;
   background-image: none;
@@ -20,7 +24,9 @@
   background-color: #FFFFFF;
 }
 
-#convertButton
+#convertButton,
+#convertButton:active,
+#convertButton:checked
 {
   border: 1px solid #333;
   background-image: none;
@@ -43,7 +49,9 @@
   border-radius: .7em;
 }
 
-#copyButton
+#copyButton,
+#copyButton:active,
+#copyButton:checked
 {
   border: 1px solid #333;
   background-image: none;

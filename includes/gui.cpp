@@ -135,8 +135,10 @@ void GUI::setStylesheet(std::string stylesheet)
   GdkDisplay* display = gdk_display_get_default ();
   GdkScreen* screen = gdk_display_get_default_screen (display);
   gtk_style_context_add_provider_for_screen (screen, GTK_STYLE_PROVIDER (provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-  GError *error = 0;
+  GError* error = nullptr;
   gtk_css_provider_load_from_file(provider, g_file_new_for_path(stylesheet.c_str()), &error);
+  if(error != NULL)
+    std::cout << error-> message << '\n';
   g_object_unref (provider);
 }
 
