@@ -1,34 +1,50 @@
 #ifndef HTTP_H
 #define HTTP_H
 
-#ifdef __APPLE__
-  #include <Poco/Net/HTTPClientSession.h>
-  #include <Poco/Net/HTTPRequest.h>
-  #include <Poco/Net/HTTPResponse.h>
-  #include <Poco/StreamCopier.h>
-  #include <Poco/Path.h>
-  #include <Poco/URI.h>
-  #include <Poco/Exception.h>
-#endif
-
-#ifdef _WIN32
-  #include <Windows.h>
-  #include <WinInet.h>
-#endif
+#include <Windows.h>
+#include <WinInet.h>
 
 #include <sstream>
 #include <string>
-#include <iostream>
-#include <map>
 
 class HTTP
 {
-  #ifdef __APPLE__
-    public: std::string sendRequest(std::string, std::map<std::string, std::string>, std::string);
-  #endif
+  std::string sendRequest(LPCSTR method, LPCSTR host, LPCSTR url, LPCSTR header, LPCSTR data)
+  {
+    std::string response;
+    HINTERNET hInternet = InternetOpen(TEXT("httpRequest"), INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
+    HINTERNET session = InternetConnect(hInternet, host, INTERNET_DEFAULT_HTTP_PORT, NULL, NULL, INTERNET_SERVICE_HTTP, 0, 0);
+    HINTERNET request = HttpOpenRequest(session, method, url, "HTTP/1.1", NULL, NULL, INTERNET_FLAG_HYPERLINK, NULL);
 
-  #ifdef _WIN32
-    public: std::string sendRequest(LPCSTR, LPCSTR, LPCSTR, LPCSTR, LPCSTR);
-  #endif
+    int datalen = 0;
+    if(data != NULL)
+      datalen = strlen(data);
+
+    int headerlen = 0;
+    if(header != NULL)
+      headerlen = strlen(header);
+
+    BOOL res = HttpSendRequest(request, header, headerlen, (char*)data, datalen);
+
+    if(res)
+    {
+      const int buffSize = 1024;
+      char buff[buffSize];
+
+      bool read = true;
+      DWORD bytesRead = -1;
+      while(read && bytesRead != 0)
+      {
+        read = InternetReadFile(request, buff, buffSize, &bytesRead);
+        response.append(buff, bytesRead);
+      }
+    }
+
+    InternetCloseHandle(request);
+    InternetCloseHandle(session);
+    InternetCloseHandle(hInternet);
+
+    return response;
+  }
 };
 #endif
