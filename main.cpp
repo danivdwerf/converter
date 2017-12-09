@@ -16,7 +16,8 @@
 #define WINDOW_HEIGHT 360
 #define WINDOW_WIDTH 640
 #define APP_NAME "FTDConverter"
-#define VERSION 2
+
+const float VERSION = 2.1f;
 
 /*GUI variables*/
 GtkWidget* textView;
@@ -29,31 +30,29 @@ Keywords* keywords = new Keywords();
 Resources* resources = new Resources();
 
 /*Open filechooser window*/
-static void fileChooser(GtkWidget* button, gpointer window)
+void fileChooser(GtkWidget* button, gpointer* data)
 {
-	GtkWidget* dialog = gtk_file_chooser_dialog_new("Open a file", GTK_WINDOW(window), GTK_FILE_CHOOSER_ACTION_OPEN, "_OK", GTK_RESPONSE_OK, "_CANCEL", GTK_RESPONSE_CANCEL, NULL);
-	gtk_widget_show_all(dialog);
+	GtkWidget* dialog = gtk_file_chooser_dialog_new("Open a file", GTK_WINDOW(data), GTK_FILE_CHOOSER_ACTION_OPEN, "_Cancel", GTK_RESPONSE_CANCEL, "_Open", GTK_RESPONSE_OK, NULL);
 	int resp = gtk_dialog_run(GTK_DIALOG(dialog));
 	if(resp == GTK_RESPONSE_OK)
 		gtk_entry_set_text(GTK_ENTRY(entryField), gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)));
 	gtk_widget_destroy(dialog);
-	return;
 }
 
 /*Dowload the newest version from website*/
 void downloadUpdate(GtkTextTag* tag, __attribute__((unused))GObject* object, GdkEvent* event)
 {
   GdkEventButton* eventButton = (GdkEventButton*)event;
-  if (event->type == GDK_BUTTON_RELEASE && eventButton->button == 1)
-	{
-		#ifdef __APPLE__
-    	system("open http://www.freetimedev.com/resources/projects/FTDConverter/FTDConverter.dmg");
-		#endif
+  if (event->type != GDK_BUTTON_RELEASE || eventButton->button != 1)
+		return;
 
-		#ifdef _WIN32
-			ShellExecute(NULL, TEXT("open"), TEXT("http://www.freetimedev.com/resources/projects/FTDConverter/FTDConverter-installer.exe"), NULL, NULL, SW_SHOWDEFAULT);
-		#endif
-	}
+	#ifdef __APPLE__
+  	system("open http://www.freetimedev.com/resources/projects/FTDConverter/FTDConverter.dmg");
+	#endif
+
+	#ifdef _WIN32
+		ShellExecute(NULL, TEXT("open"), TEXT("http://www.freetimedev.com/resources/projects/FTDConverter/FTDConverter-installer.exe"), NULL, NULL, SW_SHOWDEFAULT);
+	#endif
 }
 
 /*Open selected file and highlight code*/
@@ -69,13 +68,14 @@ void highlightCode()
 /*Check the current version on the website*/
 void checkUpdate() noexcept
 {
+	std::string data = "clientVersion=" + std::to_string(VERSION);
 	std::string response;
 	#ifdef _WIN32
-		response = http->sendRequest("POST", "www.freetimedev.com", "/resources/projects/FTDConverter/update.php", "Content-Type: application/x-www-form-urlencoded", "clientVersion=2");
+		response = http->sendRequest("POST", "www.freetimedev.com", "/resources/projects/FTDConverter/update.php", "Content-Type: application/x-www-form-urlencoded", data);
 	#endif
 
 	#ifdef __APPLE__
-		response = http->sendRequest("http://www.freetimedev.com/resources/projects/FTDConverter/update.php", "clientVersion="+VERSION);
+		response = http->sendRequest("http://www.freetimedev.com/resources/projects/FTDConverter/update.php", data.c_str());
 	#endif
 
 	if(response != "outdated")
