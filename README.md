@@ -1,8 +1,6 @@
 # FTDConverter
 
 The FTDConverter is a piece of software I wrote to make my work easier.
-<br />
-<br />
 The algorithm for detecting and highlighting code is done with plain C++ and the GUI is done with GTK+ 3.0.
 
 <br />
