@@ -3,8 +3,15 @@
 
 #include "includes/Resources.h"
 #include "includes/keywords.h"
-#include "includes/HTTP.h"
 #include "includes/gui.h"
+
+#ifdef _WIN32
+	#include "includes/HTTP.h"
+#endif
+
+#ifdef __APPLE__
+	#include "includes/HTTP.mm"
+#endif
 
 #define WINDOW_HEIGHT 360
 #define WINDOW_WIDTH 640
@@ -39,7 +46,7 @@ void downloadUpdate(GtkTextTag* tag, __attribute__((unused))GObject* object, Gdk
   GdkEventButton* eventButton = (GdkEventButton*)event;
   if (event->type == GDK_BUTTON_RELEASE && eventButton->button == 1)
 	{
-		#ifdef __APPLE_
+		#ifdef __APPLE__
     	system("open http://www.freetimedev.com/resources/projects/FTDConverter/FTDConverter.dmg");
 		#endif
 
@@ -68,10 +75,7 @@ void checkUpdate() noexcept
 	#endif
 
 	#ifdef __APPLE__
-		std::map<std::string, std::string> headers;
-		headers["Connection"] = "keep-alive";
-		std::string values = "clientVersion=" + std::to_string(VERSION);
-		response = http->sendRequest("http://freetimedev.com/resources/projects/FTDConverter/update.php", headers, values);
+		response = http->sendRequest("http://www.freetimedev.com/resources/projects/FTDConverter/update.php", "clientVersion="+VERSION);
 	#endif
 
 	if(response != "outdated")
@@ -153,20 +157,14 @@ int main(int argc, char* argv[])
 	gtk_init(&argc,&argv);
 
 	/*Get paths based on resources folder*/
-	std::string stylePath;
-	std::string logoPath;
-	std::string gtkPath;
+	std::string stylePath = "stylesheet.css";
+	std::string logoPath = "images/logo.png";
+	std::string gtkPath = "images/GTKLogo.png";
 
 	#ifdef __APPLE__
-		stylePath = resources->getFilePath("stylesheet.css");
-		logoPath = resources->getFilePath("images/logo.png");
-		gtkPath = resources->getFilePath("images/GTKLogo.png");
-	#endif
-
-	#ifdef _WIN32
-		stylePath = "stylesheet.css";
-		logoPath = "images/logo.png";
-		gtkPath = "images/GTKLogo.png";
+		stylePath = resources->getFilePath(stylePath);
+		logoPath = resources->getFilePath(logoPath);
+		gtkPath = resources->getFilePath(gtkPath);
 	#endif
 
 	/*Create all gui elements*/
@@ -181,7 +179,7 @@ int main(int argc, char* argv[])
 	GtkWidget* scrollWindow = gui->createScroller(fixed, 0, 0, 390, 350, textView);
 
 	/*Add logo's*/
-	GtkWidget* ftdLogo = gui->createImage(fixed, logoPath.c_str(), WINDOW_WIDTH - 50,WINDOW_HEIGHT - 50);
+	GtkWidget* ftdLogo = gui->createImage(fixed, logoPath.c_str(), WINDOW_WIDTH - 50, WINDOW_HEIGHT - 50);
 	GtkWidget* gtkLogo = gui->createImage(fixed, gtkPath.c_str(), WINDOW_WIDTH - 100, WINDOW_HEIGHT - 50);
 
 	/*Add eventlisteners to buttons*/

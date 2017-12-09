@@ -1,7 +1,7 @@
 # FTDConverter
 
 The FTDConverter is a piece of software I wrote to make my work easier.
-On <a href="http://freetimedev.com/extra/FreeCode/unityCode.php">freetimedev.com</a> I
+On <a href="http://freetimedev.com/extra/FreeCode/unityCode.php">my site</a> I
 try to teach programming principles, syntax and give away free bits of code.
 I wanted the code be highlighted, so it looks better and is easier to read.
 <br />
