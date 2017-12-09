@@ -71,7 +71,7 @@ void checkUpdate() noexcept
 	std::string data = "clientVersion=" + std::to_string(VERSION);
 	std::string response;
 	#ifdef _WIN32
-		response = http->sendRequest("POST", "www.freetimedev.com", "/resources/projects/FTDConverter/update.php", "Content-Type: application/x-www-form-urlencoded", data);
+		response = http->sendRequest("POST", "www.freetimedev.com", "/resources/projects/FTDConverter/update.php", "Content-Type: application/x-www-form-urlencoded", data.c_str());
 	#endif
 
 	#ifdef __APPLE__

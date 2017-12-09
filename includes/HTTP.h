@@ -9,7 +9,7 @@
 
 class HTTP
 {
-  std::string sendRequest(LPCSTR method, LPCSTR host, LPCSTR url, LPCSTR header, LPCSTR data)
+  public: std::string sendRequest(LPCSTR method, LPCSTR host, LPCSTR url, LPCSTR header, LPCSTR data)
   {
     std::string response;
     HINTERNET hInternet = InternetOpen(TEXT("httpRequest"), INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
