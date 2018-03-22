@@ -101,7 +101,6 @@ void showExample()
 	html += "</head>\0";
 	html += "<html>\0";
 	html += "<body>\0";
-
 	html += "<style>\0";
 	html += "pre {color: white;padding: 0.5em;margin: 0;background-color: #222;overflow-x: auto;}\0";
 	html += "code .pink_code{color: #ff3385;}\0";
@@ -116,13 +115,11 @@ void showExample()
 	html += ".line-number span{display:block;padding:0 .5em 0 1em;}";
   html += ".cl{display:block;clear:both;}";
 	html += "</style>";
-
 	html += "<pre>\0";
 	html += "<code>\0";
 	html += highlightedCode;
 	html += "</code>\0";
 	html += "</pre>\0";
-
 	html += "<script type='text/javascript'>";
 	html += "const pre = document.getElementsByTagName('pre');\0";
 	html += "for (let i = 0; i < pre.length; i++){\0";
@@ -133,18 +130,17 @@ void showExample()
 	html +=	"line_num.innerHTML += '<span>' + (j + 1) + '</span>';\0";
 	html += "}};\0";
 	html += "</script>";
-
 	html += "</body>\0";
 
 	std::string path = "preview.html";
 	#ifdef __APPLE__
-		path = resources->getFilePath(path);
+	path = resources->getFilePath(path);
 	#endif
 	resources->writeToFile(path, html);
 
 	#ifdef __APPLE__
-		std::string command = "open " + path;
-		system(command.c_str());
+	std::string command = "open " + path;
+	system(command.c_str());
 	#endif
 
 	#ifdef _WIN32
@@ -162,35 +158,52 @@ int main(int argc, char* argv[])
 	std::string gtkPath = "images/GTKLogo.png";
 
 	#ifdef __APPLE__
-		stylePath = resources->getFilePath(stylePath);
-		logoPath = resources->getFilePath(logoPath);
-		gtkPath = resources->getFilePath(gtkPath);
+	stylePath = resources->getFilePath(stylePath);
+	logoPath = resources->getFilePath(logoPath);
+	gtkPath = resources->getFilePath(gtkPath);
 	#endif
 
-	/*Create all gui elements*/
+  //Window
 	GtkWidget* window = gui->createWindow(WINDOW_WIDTH, WINDOW_HEIGHT, FALSE, APP_NAME, 10);
+
+  //Fixed Container
 	GtkWidget* fixed = gui->createContainer(window);
+
+  //File entryfield
 	entryField = gui->createEntry(fixed, 405, 0 , 30, "Fill in the path to your file...");
+
+  //File chooser button
 	GtkWidget* fileButton = gui->createButton("Choose a file", fixed, 405, 32, 228, 35, "fileButton");
+	g_signal_connect (fileButton, "clicked", G_CALLBACK(fileChooser), window);
+
+	//Convert button
 	GtkWidget* convertButton = gui->createButton("Convert your code", fixed, 405, 64, 228, 35, "convertButton");
+	g_signal_connect (convertButton, "clicked", G_CALLBACK(highlightCode), NULL);
+
+  //Copy button
 	GtkWidget* copyButton = gui->createButton("copy", fixed, 400, 280, 30, 30, "copyButton");
-	GtkWidget* exampleButton = gui->createButton("preview", fixed, 400, 318, 50, 30, "copyButton");
+	g_signal_connect (copyButton, "clicked", G_CALLBACK(gui->copyBufferToClipboard), textView);
+
+  //Preview button
+	GtkWidget* previewButton = gui->createButton("preview", fixed, 400, 318, 50, 30, "copyButton");
+	g_signal_connect (previewButton, "clicked", G_CALLBACK(showExample), NULL);
+
+	//Text preview
 	textView = gui->createTextView("Fill in the path to your file, or click the choose a file button.\n\nAfter selecting your file, your converted code will be show here after converting.\n\nSelect your code and press cmd+c (ctrl+c) to copy the text to your clipboard.\n\nAvailable languages are:\nUnityC#", FALSE, FALSE);
+
+	//Scroll window
 	GtkWidget* scrollWindow = gui->createScroller(fixed, 0, 0, 390, 350, textView);
 
-	/*Add logo's*/
+	/*FTD Logo*/
 	GtkWidget* ftdLogo = gui->createImage(fixed, logoPath.c_str(), WINDOW_WIDTH - 50, WINDOW_HEIGHT - 50);
-	GtkWidget* gtkLogo = gui->createImage(fixed, gtkPath.c_str(), WINDOW_WIDTH - 100, WINDOW_HEIGHT - 50);
 
-	/*Add eventlisteners to buttons*/
-	g_signal_connect (convertButton, "clicked", G_CALLBACK(highlightCode), NULL);
-	g_signal_connect (fileButton, "clicked", G_CALLBACK(fileChooser), window);
-	g_signal_connect (copyButton, "clicked", G_CALLBACK(gui->copyBufferToClipboard), textView);
-	g_signal_connect (exampleButton, "clicked", G_CALLBACK(showExample), NULL);
-
+	//Check if update is available
 	checkUpdate();
+
+	//Set stylesheet
 	gui->setStylesheet(stylePath);
 
+	//Show window
 	gtk_widget_show_all (window);
 	gtk_main ();
 	return 0;
