@@ -163,16 +163,16 @@ int main(int argc, char* argv[])
 	gtkPath = resources->getFilePath(gtkPath);
 	#endif
 
-  //Window
+	//Window
 	GtkWidget* window = gui->createWindow(WINDOW_WIDTH, WINDOW_HEIGHT, FALSE, APP_NAME, 10);
 
-  //Fixed Container
+	//Fixed Container
 	GtkWidget* fixed = gui->createContainer(window);
 
-  //File entryfield
+	//File entryfield
 	entryField = gui->createEntry(fixed, 405, 0 , 30, "Fill in the path to your file...");
 
-  //File chooser button
+	//File chooser button
 	GtkWidget* fileButton = gui->createButton("Choose a file", fixed, 405, 32, 228, 35, "fileButton");
 	g_signal_connect (fileButton, "clicked", G_CALLBACK(fileChooser), window);
 
@@ -180,11 +180,11 @@ int main(int argc, char* argv[])
 	GtkWidget* convertButton = gui->createButton("Convert your code", fixed, 405, 64, 228, 35, "convertButton");
 	g_signal_connect (convertButton, "clicked", G_CALLBACK(highlightCode), NULL);
 
-  //Copy button
+	//Copy button
 	GtkWidget* copyButton = gui->createButton("copy", fixed, 400, 280, 30, 30, "copyButton");
 	g_signal_connect (copyButton, "clicked", G_CALLBACK(gui->copyBufferToClipboard), textView);
 
-  //Preview button
+	//Preview button
 	GtkWidget* previewButton = gui->createButton("preview", fixed, 400, 318, 50, 30, "copyButton");
 	g_signal_connect (previewButton, "clicked", G_CALLBACK(showExample), NULL);
 
